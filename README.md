@@ -13,6 +13,8 @@
       - [Extra](#extra)
     - [Estagios de um arquivo no Git](#estagios-de-um-arquivo-no-git)
     - [Como alterar um commit que ja foi para a origin](#como-alterar-um-commit-que-ja-foi-para-a-origin)
+  - [Vercel](#vercel)
+  - [CI (Continuous Integration)](#ci-continuous-integration)
 
 ## Node.js
 
@@ -70,19 +72,20 @@ Pode ser acessada por qualquer dispositivo conectado à internet (ou à mesma re
 ## Git
 
 ### Commandos
-`git log` - listar os commits do repositório.
-`git log --stat` - listar os commits do repositório com o `diff` entre as versoes.
-`git log --oneline` - listar os commits do repositório de forma compactada.
-`git add` - sobe alterações para a staging area.
-`git commit` - realiza novos commits.
-`git commit --amend` - substitui o commit anterior por um novo, mas aproveita as alterações dele.
-`git diff` - calcula a diferença entre as versões/alterações dos arquivos.
+- `git log` - listar os commits do repositório.
+- `git log --stat` - listar os commits do repositório com o `diff` entre as versoes.
+- `git log --oneline` - listar os commits do repositório de forma compactada.
+- `git add` - sobe alterações para a staging area.
+- `git commit` - realiza novos commits.
+- `git commit --amend` - substitui o commit anterior por um novo, mas aproveita as alterações dele.
+- `git diff` - calcula a diferença entre as versões/alterações dos arquivos.
 
-`git commit -m "mensagem"` - atalho para fazer novos commits.
-`git push` - empurrar alterações locais para o origin.
-`git push --force` - empurrar de forma forçada alterações locais para o origin.
-`git push -f` - a forma comprimida do comando anterior.
-`git branch` - listas as branchs existentes.
+- `git commit -m "mensagem"` - atalho para fazer novos commits.
+- `git commit --amend -m "mensagem"` - usando a flag `-m` para poder fazer o amendo com a mensagem.
+- `git push` - empurrar alterações locais para o origin.
+- `git push --force` - empurrar de forma forçada alterações locais para o origin.
+- `git push -f` - a forma comprimida do comando anterior.
+- `git branch` - listas as branchs existentes.
 
 #### Extra 
 `ls -l` - lista todos os arquivos na pasta mas de forma vertical.
@@ -113,5 +116,17 @@ Agora ela faz parte do histórico oficial do projeto.
   Committed
 ```
 
-### Como alterar um commit que ja foi para a origin 
+### Como alterar um commit que ja foi para a origin
+ 1 - Fazer as alteracoes que deseja localmente.
+ 2 - Usar o comando `git commit --amend` para substituir o commit anterior por um novo.
+ 3 - O git apenas aceitara o push se usarmos a flag `-f` ou `--force`. **MUITO CUIDADO AO USAR ISSO**
+
+
+## Vercel
+https://curso.dev/web/novos-deploys
+
+A Vercel mantem URL's para deploys antigos, bem util para poder observar qual o ultimo commit que estava funcionando antes de subir um bug.
+
+## CI (Continuous Integration)
+
 
