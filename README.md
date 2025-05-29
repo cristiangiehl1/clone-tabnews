@@ -39,6 +39,22 @@
     - [Exemplo:](#exemplo-1)
   - [Proposta de Arquitetura de Pastas](#proposta-de-arquitetura-de-pastas)
   - [Testes - TDD (Test Driven Development)](#testes---tdd-test-driven-development)
+    - [✅ 1. Unit Tests (Testes Unitários)](#-1-unit-tests-testes-unitários)
+      - [Características:](#características-2)
+      - [Exemplo:](#exemplo-2)
+    - [Integration Tests](#integration-tests)
+      - [Características:](#características-3)
+      - [Exemplo](#exemplo-3)
+    - [E2E (End-to-End)](#e2e-end-to-end)
+      - [Características:](#características-4)
+      - [Exemplo](#exemplo-4)
+  - [API (Application Programming Interface)](#api-application-programming-interface)
+    - [Tipos comuns de API](#tipos-comuns-de-api)
+    - [Para que serve uma API](#para-que-serve-uma-api)
+  - [HTTP (Hypertext Transfer Protocol)](#http-hypertext-transfer-protocol)
+    - [Testando requisicoes HTTP com o CURL](#testando-requisicoes-http-com-o-curl)
+  - [O que é Virtual Host?](#o-que-é-virtual-host)
+    - [Hospedagem na Vercel (alguem pode confirmar essa info?)](#hospedagem-na-vercel-alguem-pode-confirmar-essa-info)
 
 ## Node.js
 
@@ -394,4 +410,234 @@ Voltando ao app de reservas por voz, o **MVP** seria uma versão simples que:
 
 
 ## Testes - TDD (Test Driven Development)
+
+### ✅ 1. Unit Tests (Testes Unitários)
+**Objetivo:** Testar **componentes isolados** (funções, métodos, classes) de forma independente.
+
+#### Características:
+- Testam **uma única unidade de código**.
+- Não dependem de banco de dados, rede, arquivos ou outros módulos.
+- Rápidos e fáceis de rodar.
+- Usam mocks/stubs para dependências externas.
+
+#### Exemplo:
+```ts
+// soma.ts
+export function soma(a: number, b: number): number {
+  return a + b;
+}
+```
+
+```ts
+// soma.test.ts
+import { soma } from './soma';
+
+test('soma dois números corretamente', () => {
+  expect(soma(2, 3)).toBe(5);
+});
+```
+
+### Integration Tests
+**Objetivo**: Testar a integração entre múltiplos componentes do sistema.
+
+#### Características:
+- Verificam se diferentes partes do sistema funcionam juntas.
+- Podem envolver banco de dados, filesystem, APIs internas, etc.
+- Mais lentos que testes unitários.
+- Testam fluxos mais completos, mas ainda não o sistema todo.
+
+#### Exemplo 
+
+```ts
+// app.ts
+import express from 'express';
+const app = express();
+app.use(express.json());
+app.post('/users', (req, res) => {
+  const { name, email } = req.body;
+  if (name && email) return res.status(201).send();
+  return res.status(400).send();
+});
+export default app;
+```
+
+```ts
+// app.test.ts
+import request from 'supertest';
+import app from './app';
+
+describe('POST /users', () => {
+  it('deve criar um usuário com dados válidos', async () => {
+    const res = await request(app)
+      .post('/users')
+      .send({ name: 'Alice', email: 'alice@example.com' });
+
+    expect(res.status).toBe(201);
+  });
+});
+```
+
+### E2E (End-to-End)
+**Objetivo**: Testar o sistema como um todo, simulando a interação de um usuário real.
+
+#### Características:
+- Verifica se todo o sistema funciona de ponta a ponta.
+- Pode envolver frontend, backend, banco de dados e serviços externos.
+- Mais lentos e complexos.
+- Geralmente usam ferramentas como Playwright, Cypress ou Puppeteer.
+
+#### Exemplo
+
+```ts
+// cadastro.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('usuário pode se cadastrar', async ({ page }) => {
+  await page.goto('https://meuapp.com');
+  await page.click('text=Registrar');
+  await page.fill('input[name="email"]', 'usuario@teste.com');
+  await page.fill('input[name="senha"]', '123456');
+  await page.click('button[type="submit"]');
+  await expect(page.locator('.mensagem')).toContainText('Cadastro realizado');
+});
+```
+
+
+## API (Application Programming Interface)
+API é a sigla para Interface de Programação de Aplicações.
+Ela é um conjunto de regras e definições que permite que diferentes sistemas ou programas se comuniquem entre si.
+
+### Tipos comuns de API
+**APIs Web (HTTP/REST/GraphQL)**: São acessadas pela internet.
+**APIs de Bibliotecas:** Chamadas diretamente dentro do código (como funções de um SDK).
+**APIs de Sistema Operacional:** Para interagir com o sistema, arquivos, rede, etc.
+
+### Para que serve uma API
+A principal utilidade de uma API (Interface de Programação de Aplicações) é facilitar a integração entre sistemas distintos, permitindo que eles se comuniquem sem que seja necessário 
+entender a lógica interna ou a implementação de cada um. Em vez disso, basta seguir as regras e formatos definidos na documentação da API, 
+que descrevem como fazer requisições e interpretar as respostas.
+
+
+## HTTP (Hypertext Transfer Protocol)
+The Hypertext Transfer Protocol (HTTP) is the foundation of the World Wide Web, and is used to load webpages using hypertext links.
+O HTTP é um protocolo da camada de aplicação desenvolvido para transferir informações entre dispositivos em rede e é executado no topo de outras camadas da pilha de protocolos de rede. 
+Um fluxo típico de HTTP envolve uma máquina cliente que faz uma solicitação a um servidor, o qual por sua vez, envia uma mensagem de resposta.
+
+### Testando requisicoes HTTP com o CURL
+
+1) Nao vai mostrar todos os detalhes do header da response
+```bash
+curl http://localhost:3000/api/status
+```
+
+1) Mostra os detalhes do protocolo HTTP
+
+```bash
+curl http://localhost:3000/api/status -v OU curl http://localhost:3000/api/status --verbose
+```
+
+```bash
+curl http://localhost:3000/api/status -v
+* Host localhost:3000 was resolved. 
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:3000...
+* Connected to localhost (::1) port 3000
+> GET /api/status HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK                                             - status
+< Content-Type: application/json; charset=utf-8               - headers
+< ETag: "yef0diftaa1o"                                        - headers
+< Content-Length: 60                                          - headers
+< Vary: Accept-Encoding                                       - headers
+< Date: Wed, 28 May 2025 21:23:54 GMT                         - headers
+< Connection: keep-alive                                      - headers
+< Keep-Alive: timeout=5                                       - headers
+< 
+* Connection #0 to host localhost left intact
+{"message":"alunos do curso.dev sao pessoas acima da media"}  - body
+```
+(*) - mostra **ações internas** que o `curl` está realizando (resolução de DNS, conexão, etc).
+(>) - mostra os **dados da requisição** HTTP (`request`) que está sendo enviada.
+(<) - mostra os **dados da resposta** HTTP (`response`) que está sendo recebida.
+
+
+## O que é Virtual Host?
+Quando hospedamos múltiplos sites ou aplicações em um único servidor, utilizamos a técnica chamada Virtual Host.
+Isso permite que um mesmo servidor responda por diferentes domínios, separando suas configurações e comportamentos.
+
+### Hospedagem na Vercel (alguem pode confirmar essa info?)
+A Vercel utiliza a técnica de Virtual Host baseada em nome de domínio, utilizando apenas um endereço IP para todos os domínios no servidor.
+
+Quando fazemos uma solicitação a um domínio hospedado na Vercel, ocorre o seguinte:
+- A solicitação chega ao servidor, que a envia para o host virtual;
+- O servidor verifica o nome do domínio solicitado;
+- Após essa verificação, ele consulta a configuração do host correspondente e retorna a resposta com o conteúdo do site adequado.
+
+Podemos visualizar esse comportamento ao passar o Host no header da nossa requisição HTTP:
+- Usamos o IP da Vercel - https://76.76.21.21;
+- E passamos o domínio do nosso site no header Host: bitbites.com.br
+```bash
+curl https://76.76.21.21 --verbose --insecure --header 'Host: bitbites.com.br'
+```
+
+```bash
+*   Trying 76.76.21.21:443...
+* Connected to 76.76.21.21 (76.76.21.21) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / X25519 / RSASSA-PSS
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=no-sni.vercel-infra.com
+*  start date: May 18 12:16:04 2025 GMT
+*  expire date: Aug 16 12:16:03 2025 GMT
+*  issuer: C=US; O=Let's Encrypt; CN=R10
+*  SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://76.76.21.21/
+* [HTTP/2] [1] [:method: GET]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: bitbites.com.br]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: curl/8.5.0]
+* [HTTP/2] [1] [accept: */*]
+> GET / HTTP/2
+> Host: bitbites.com.br
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+< HTTP/2 200 
+< accept-ranges: bytes
+< access-control-allow-origin: *
+< age: 1639
+< cache-control: public, max-age=0, must-revalidate
+< content-disposition: inline
+< content-type: text/html; charset=utf-8
+< date: Thu, 29 May 2025 18:13:34 GMT
+< etag: "7f1cef8e85967d59408621da08510d77"
+< last-modified: Thu, 29 May 2025 17:46:15 GMT
+< server: Vercel
+< strict-transport-security: max-age=63072000
+< x-matched-path: /
+< x-vercel-cache: HIT
+< x-vercel-id: gru1::tvwnm-1748542414787-bbe4cde893db
+< content-length: 1144
+< 
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><meta name="next-head-count" content="2"/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-4e7214a60fad8e88.js" defer=""></script><script src="/_next/static/chunks/framework-eaa0f3520361d921.js" defer=""></script><script src="/_next/static/chunks/main-a0dca5a2ff5035f1.js" defer=""></script><script src="/_next/static/chunks/pages/_app-df511a3677d160f6.js" defer=""></script><script src="/_next/static/chunks/pages/index-2dd7be254f77007d.js" defer=""></script><script src="/_next/static/en8D9dGBcU1f4V_GUQqy_/_buildManifest.js" defer=""></script><script src="/_next/static/en8D9dGBcU1f4V_GUQqy_/_ssgManifest.js" defer=""></script></head><body><div id="__next"><h1>Mudando a frase</h1></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{}},"page":"/","query":{},"buildId":* Connection #0 to host 76.76.21.21 left intact
+"en8D9dGBcU1f4V_GUQqy_","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script></body></html>
+```
 
