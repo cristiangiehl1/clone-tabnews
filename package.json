@@ -1,11 +1,11 @@
 {
   "name": "curso-dev",
   "version": "1.0.0",
-  "description": "1) lista a version ```bash node -v ```",
+  "description": "",
   "license": "MIT",
   "author": "Cristian Giehl",
   "type": "module",
-  "main": "src/pages/index.js",
+  "main": "src/pages/index.tsx",
   "scripts": {
     "dev": "next dev",
     "lint:check": "prettier --check .",

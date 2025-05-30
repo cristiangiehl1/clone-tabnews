@@ -4,7 +4,7 @@ const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
   moduleNameMapper: {
-    "^models/(.*)$": "<rootDir>/models/$1"
+    "^models/(.*)$": "<rootDir>/src/models/$1"
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
 }
