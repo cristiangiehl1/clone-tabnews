@@ -55,6 +55,18 @@
     - [Testando requisicoes HTTP com o CURL](#testando-requisicoes-http-com-o-curl)
   - [O que é Virtual Host?](#o-que-é-virtual-host)
     - [Hospedagem na Vercel (alguem pode confirmar essa info?)](#hospedagem-na-vercel-alguem-pode-confirmar-essa-info)
+  - [Qual banco de dados escolher?](#qual-banco-de-dados-escolher)
+  - [Virtual Machine x Docker](#virtual-machine-x-docker)
+    - [Virtual Machine - Surgimento 2007](#virtual-machine---surgimento-2007)
+    - [Vagrant - Surgimento 2010](#vagrant---surgimento-2010)
+    - [Docker - Surgimento em 2013](#docker---surgimento-em-2013)
+  - [CPUs (Central Processing Units) and GPUs (Graphics Processing Units).](#cpus-central-processing-units-and-gpus-graphics-processing-units)
+  - [Usando Docker Compose](#usando-docker-compose)
+    - [CLI](#cli)
+    - [O que quer dizer que uma versao de imagem e Alpine](#o-que-quer-dizer-que-uma-versao-de-imagem-e-alpine)
+    - [Imagem do banco de dados](#imagem-do-banco-de-dados)
+  - [Instalando o `psql`](#instalando-o-psql)
+  - [Jest](#jest)
 
 ## Node.js
 
@@ -641,3 +653,200 @@ curl https://76.76.21.21 --verbose --insecure --header 'Host: bitbites.com.br'
 "en8D9dGBcU1f4V_GUQqy_","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script></body></html>
 ```
 
+## Qual banco de dados escolher?
+Devemos levar em consideracao os aspectos abaixo:
+
+**1) DBMS (Database Management System - Sistema de Gerenciamento de Banco de Dados)**
+Quem fara a gestao e protecao desse banco de dados. Bem curioso, pq eu achava que os exemplos abaixo eram o banco de dados puramente falando, mas na realidade
+sao DBMS.
+
+**Exemplos:** 
+- MySQL
+- PostgreSQL
+- Oracle Database
+- Microsoft SQL Server
+- MongoDB (NoSQL)
+
+**Tipos de banco de dados:**
+- Relacional;
+- Nao relacional;
+  - Armazenamento de Documentos
+  - Armazenamento chave-valor
+- Serie Temporal - muito usado em dados de monitoria;
+- Espacial - muito usado em dados geograficos.
+
+**SQL (Structured Query Language)**
+É uma linguagem de consulta estruturada e uma linguagem de domínio específico, 
+desenvolvida para gerenciar dados relacionais em um sistema de gerenciamento de banco de dados.
+
+**2) Query (Consultar) E ORM's (Object-Relational Mapping ou Mapeamento Objeto-Relacional)**
+Para realizarmos consultas no banco de dados podemos fazer com SQL Puro ou utilizando ORM's.
+ 
+Levando em consideração que a principal utilidade de um `ORM` é abstrair o uso direto de `SQL`, ele facilita a escrita e leitura das consultas ao adotar uma sintaxe mais próxima da linguagem de programação utilizada. Além disso, o `ORM` gerencia a conexão com o banco de dados e realiza a conversão automática dos dados em objetos manipuláveis no código. No entanto, é importante estar ciente de suas limitações: 
+- Consultas muito complexas ou que envolvem grandes volumes de dados podem apresentar lentidão, tornando-se menos eficientes em termos de performance se comparadas ao uso direto de `SQL`;
+- Algumas operações avançadas podem não ser suportadas ou ser difíceis de implementar apenas com o `ORM`, exigindo, em certos casos, o uso de `SQL` puro para maior controle e eficiência.
+
+
+**Exemplo Query Pura:**
+```sql
+SELECT count(*) FROM users;
+```
+
+**Exemplo Query com ORM:**
+
+```sql
+User.count()
+```
+
+**3) Migrations**
+**Migrations (ou migrações)** são scripts ou arquivos que descrevem as alterações estruturais no banco de dados de forma controlada e versionada.
+
+As migrações ajudam a transicionar o esquema do banco de dados do seu estado atual para um novo estado desejado: 
+- adicionando tabelas e colunas; 
+- removendo elementos; 
+- dividindo campos; ou 
+- alterando tipos e restrições.
+
+## Virtual Machine x Docker
+`Máquinas virtuais` e tecnologias como o `Docker` surgiram para resolver problemas de **incompatibilidade de 
+ambiente** ao hospedar e executar projetos em diferentes hosts. Cada máquina (ou servidor) pode ter configurações únicas, como:
+- Hardware distinto;
+- Sistemas operacionais variados;
+- Patches de segurança em versões diferentes;
+- Softwares auxiliares instalados (dependências do sistema);
+- Presença de antivírus;
+- Idioma do sistema operacional;
+- Configurações de fuso horário;
+
+Essas diferenças podem causar comportamentos inesperados, erros ou falhas de execução quando o projeto é movido de um 
+ambiente de desenvolvimento para produção, ou entre diferentes times.
+Ao encapsular uma aplicação com todas as suas dependências e configurações necessárias, o `Docker` — e as `máquinas virtuais` em geral — permitem que o 
+software seja executado de forma consistente e previsível, independentemente do ambiente do host.
+
+### Virtual Machine - Surgimento 2007
+O principal problema das máquinas virtuais é que elas consomem muitos recursos do sistema, especialmente memória e CPU. 
+Isso ocorre porque cada VM executa um sistema operacional completo, o que exige mais do hardware.
+Entao, imagine um projeto mais complexo onde seria necessario configurar uma VM para: 
+1) cada camada da aplicacao: 
+2) banco de dados; 
+3) servicos de emails; etc.  
+O custo de processamento subiria demais.
+
+┌──────────────────────┬──────────────────────┐
+│     Aplicação        │    Banco de Dados    │
+├──────────────────────┼──────────────────────┤
+│  Sistema Operacional │  Sistema Operacional │
+│     (Guest)          │     (Guest)          │
+├──────────────────────┴──────────────────────┤
+├─────────────────────────────────────────────┤
+│               Virtualizador                 │
+├─────────────────────────────────────────────┤
+├─────────────────────────────────────────────┤
+│         Sistema Operacional (Host)          │
+├─────────────────────────────────────────────┤
+├─────────────────────────────────────────────┤
+│              Hardware (Host)                │
+└─────────────────────────────────────────────┘
+
+
+### Vagrant - Surgimento 2010
+Foi uma solucao para tornar mais facil a configuracao de uma virtual machine. 
+
+
+### Docker - Surgimento em 2013
+Foi uma abstracao do `Namespaces` e `Control Groups` do Linux.
+O docker e uma interface programatica que permite a configuracao de containers (o agrupamento de recursos) dentro de um sistema operacional que ja esta rodando,
+sem a necessidade de utilizar uma VM.
+
+┌──────────────────────┬──────────────────────┐
+│     Aplicação        │    Banco de Dados    │
+├──────────────────────┴──────────────────────┤
+├─────────────────────────────────────────────┤
+│              Container Engine               │
+├─────────────────────────────────────────────┤
+├─────────────────────────────────────────────┤
+│         Sistema Operacional (Host)          │
+├─────────────────────────────────────────────┤
+├─────────────────────────────────────────────┤
+│              Hardware (Host)                │
+└─────────────────────────────────────────────┘
+
+
+## CPUs (Central Processing Units) and GPUs (Graphics Processing Units). 
+
+The CPU is often described as the “brain” of the computer because it handles a wide variety of computational tasks necessary for the system to operate. 
+It executes the instructions of computer programs through a fetch-decode-execute cycle. 
+These processors manage everything from basic arithmetic and logical operations to system control and input/output management.
+Processors like the **Intel Core** series or **AMD Ryzen** series are designed for versatility, efficiently handling diverse workloads.
+
+Initially developed to accelerate the rendering of images, videos, and 3D graphics, the GPU has evolved into a powerful processor optimized 
+for parallel computation. It is the reason behind the Generate AI boom that the world has seen in the last 3 years. G
+PUs contain thousands of smaller, specialized cores designed to perform many calculations simultaneously. 
+This massively parallel architecture makes them exceptionally efficient not only for graphic designing but for other tasks involving high computation.
+High-performance GPU examples include the **NVIDIA Blackwell B200,** **RTX4090**, and **AMD Radeon RX series** support AI development, gaming, graphic designing, and more
+
+![CPU X GPU](https://cdn.analyticsvidhya.com/wp-content/uploads/2025/05/Info-2.webp)  
+
+
+## Usando Docker Compose
+**Dockerfile:** define os comandos que vao formar o ambiente virtual com o servico que queremos consumir. Esse arquivo precisa ser compilado em uma imagem (na pratica e um binario).
+
+
+### CLI
+1) Cria o container
+```bash
+docker compose up
+```
+
+2) Inicia os serviços em segundo plano (modo detached), sem travar o terminal.
+```bash
+docker compose up --detach 
+```
+
+OU
+
+```bash
+docker compose up -d 
+```
+
+3) Cria o container especificando o path do `compose.yaml`
+```bash
+docker compose --file infra/compose.yaml up
+```
+
+OU 
+
+```bash
+docker compose --f infra/compose.yaml up
+```
+
+4) Destrui o container docker
+```bash
+docker compose down
+```
+
+1) Recria o container (necessario quando fazemos alguma alteracao no docker compose)
+```bash
+docker compose up -d --force-recreate
+``` 
+
+### O que quer dizer que uma versao de imagem e Alpine
+Quer dizer que a imagem foi gerada usando uma versao da distribuicao do Linux Alpine. 
+A imagem base do Alpine Linux ocupa menos de 10mb de espaco.
+
+
+### Imagem do banco de dados
+[Postgres Image](https://hub.docker.com/_/postgres)
+
+
+## Instalando o `psql`
+O `psql` é o **cliente de linha de comando oficial do PostgreSQL**.
+`psql` é a ferramenta que você usa para se **conectar a um banco de dados PostgreSQL** e **executar comandos SQL** interativos.
+
+```bash
+psql --host=localhost --username=postgres --port=5333
+```
+
+## Jest
+- a flag `--watch` vai rodar somente nos tests que sofrerem alguma mudanca.
+- a flag `--watchAll` vai rodar em todos os testes.
