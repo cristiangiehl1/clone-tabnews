@@ -68,6 +68,7 @@
   - [Instalando o `psql`](#instalando-o-psql)
   - [Jest](#jest)
   - [Como remover dados sensiveis do seu repositorio](#como-remover-dados-sensiveis-do-seu-repositorio)
+  - [Atalhos](#atalhos)
 
 ## Node.js
 
@@ -149,6 +150,8 @@ Permite configurar uma porta pública ou privada.
 - `git branch` - listas as branchs existentes.
 
 - `git mv .env .env.development` - move os dados de um arquivo para outro.
+
+- `git commit -am 'mensagem de commit'` - move todas as alteracoes para staging e commita elas.
 
 #### Extra
 
@@ -858,3 +861,10 @@ psql --host=localhost --username=postgres --port=5333
 [Remover dados confidenciais de um repositorio](https://docs.github.com/pt/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
 
 [BFG Repo Cleaner](https://curso.dev/alunos/maion/b0dbda29-d784-4dd2-8ae5-e59eac4cc992)
+
+
+## Atalhos
+
+1) ctrl + p => possibilita pesquisar os arquivos do nosso projeto pelo nome.
+- Mostra uma lista de arquivos com o nome do input.
+- Tambem e possivel selecionar um campo dentro do arquivo exemplo: package@scripts
