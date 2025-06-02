@@ -1,5 +1,6 @@
 import { Client, type QueryConfig } from 'pg'
 
+
 async function query(queryObj: QueryConfig) {
   const portEnv = process.env.POSTGRES_PORT;
   if (!portEnv) {
@@ -13,11 +14,16 @@ async function query(queryObj: QueryConfig) {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
   })
+  
   await client.connect()
-  const result = await client.query(queryObj)
-  await client.end()
 
-  return result
+  try {
+    return await client.query(queryObj)
+  } catch (err) {
+    console.error(err)
+  } finally {
+    await client.end()
+  }
 }
 
 export default {

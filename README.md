@@ -38,7 +38,7 @@
     - [Características:](#características-1)
     - [Exemplo:](#exemplo-1)
   - [Proposta de Arquitetura de Pastas](#proposta-de-arquitetura-de-pastas)
-  - [Testes - TDD (Test Driven Development)](#testes---tdd-test-driven-development)
+  - [Testes](#testes)
     - [✅ 1. Unit Tests (Testes Unitários)](#-1-unit-tests-testes-unitários)
       - [Características:](#características-2)
       - [Exemplo:](#exemplo-2)
@@ -51,6 +51,7 @@
   - [API (Application Programming Interface)](#api-application-programming-interface)
     - [Tipos comuns de API](#tipos-comuns-de-api)
     - [Para que serve uma API](#para-que-serve-uma-api)
+  - [Protocol](#protocol)
   - [HTTP (Hypertext Transfer Protocol)](#http-hypertext-transfer-protocol)
     - [Testando requisicoes HTTP com o CURL](#testando-requisicoes-http-com-o-curl)
   - [O que é Virtual Host?](#o-que-é-virtual-host)
@@ -69,6 +70,13 @@
   - [Jest](#jest)
   - [Como remover dados sensiveis do seu repositorio](#como-remover-dados-sensiveis-do-seu-repositorio)
   - [Atalhos](#atalhos)
+  - [MVC - Model Viewl Controller](#mvc---model-viewl-controller)
+  - [TDD - Test Driven Development](#tdd---test-driven-development)
+    - [Estagios do TDD](#estagios-do-tdd)
+  - [Outro](#outro)
+    - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
+    - [PostgreSQL](#postgresql)
+    - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
 
 ## Node.js
 
@@ -427,7 +435,10 @@ Voltando ao app de reservas por voz, o **MVP** seria uma versão simples que:
 |   - tests   
 
 
-## Testes - TDD (Test Driven Development)
+## Testes
+- Unit Tests
+- Integrations Tets
+- E2E Tests
 
 ### ✅ 1. Unit Tests (Testes Unitários)
 **Objetivo:** Testar **componentes isolados** (funções, métodos, classes) de forma independente.
@@ -456,7 +467,7 @@ test('soma dois números corretamente', () => {
 ```
 
 ### Integration Tests
-**Objetivo**: Testar a integração entre múltiplos componentes do sistema.
+**Objetivo**: How multiple units work together — e.g., a function interacting with a database or external API.
 
 #### Características:
 - Verificam se diferentes partes do sistema funcionam juntas.
@@ -497,6 +508,8 @@ describe('POST /users', () => {
 
 ### E2E (End-to-End)
 **Objetivo**: Testar o sistema como um todo, simulando a interação de um usuário real.
+The **entire system** from the **user's perspective** — like a real user interacting with the UI and backend.
+
 
 #### Características:
 - Verifica se todo o sistema funciona de ponta a ponta.
@@ -524,6 +537,7 @@ test('usuário pode se cadastrar', async ({ page }) => {
 ## API (Application Programming Interface)
 API é a sigla para Interface de Programação de Aplicações.
 Ela é um conjunto de regras e definições que permite que diferentes sistemas ou programas se comuniquem entre si.
+You can think of it as a messenger between two programs. One program sends a request, and the API delivers it to the other system, then returns the response.
 
 ### Tipos comuns de API
 **APIs Web (HTTP/REST/GraphQL)**: São acessadas pela internet.
@@ -536,8 +550,14 @@ entender a lógica interna ou a implementação de cada um. Em vez disso, basta 
 que descrevem como fazer requisições e interpretar as respostas.
 
 
+## Protocol
+A protocol is a system of rules that define how data is exchanged within or between computers. Communications between devices require that the devices agree on the format of the data that is being exchanged. The set of rules that defines a format is called a protocol.
+
 ## HTTP (Hypertext Transfer Protocol)
-The Hypertext Transfer Protocol (HTTP) is the foundation of the World Wide Web, and is used to load webpages using hypertext links.
+HTTP is a **protocol for fetching resources such as HTML documents**. It is the foundation of any data exchange on the Web and it is a client-server protocol, which means requests are initiated by the recipient, usually the Web browser. A complete document is typically constructed from resources such as text content, layout instructions, images, videos, scripts, and more.
+
+**Clients** and **servers** communicate by exchanging individual messages (as opposed to a stream of data). The messages sent by the client are called requests and the messages sent by the server as an answer are called responses.
+
 O HTTP é um protocolo da camada de aplicação desenvolvido para transferir informações entre dispositivos em rede e é executado no topo de outras camadas da pilha de protocolos de rede. 
 Um fluxo típico de HTTP envolve uma máquina cliente que faz uma solicitação a um servidor, o qual por sua vez, envia uma mensagem de resposta.
 
@@ -588,9 +608,9 @@ Quando hospedamos múltiplos sites ou aplicações em um único servidor, utiliz
 Isso permite que um mesmo servidor responda por diferentes domínios, separando suas configurações e comportamentos.
 
 ### Hospedagem na Vercel (alguem pode confirmar essa info?)
-A Vercel utiliza a técnica de Virtual Host baseada em nome de domínio, utilizando apenas um endereço IP para todos os domínios no servidor.
+A `Vercel` utiliza a técnica de Virtual Host baseada em **nome de domínio**, utilizando apenas **um endereço IP** para todos os domínios no servidor.
 
-Quando fazemos uma solicitação a um domínio hospedado na Vercel, ocorre o seguinte:
+Quando fazemos uma solicitação a um domínio hospedado na `Vercel`, ocorre o seguinte:
 - A solicitação chega ao servidor, que a envia para o host virtual;
 - O servidor verifica o nome do domínio solicitado;
 - Após essa verificação, ele consulta a configuração do host correspondente e retorna a resposta com o conteúdo do site adequado.
@@ -660,37 +680,42 @@ curl https://76.76.21.21 --verbose --insecure --header 'Host: bitbites.com.br'
 ```
 
 ## Qual banco de dados escolher?
-Devemos levar em consideracao os aspectos abaixo:
+Devemos responder 4 perguntas:
 
-**1) DBMS (Database Management System - Sistema de Gerenciamento de Banco de Dados)**
-Quem fara a gestao e protecao desse banco de dados. Bem curioso, pq eu achava que os exemplos abaixo eram o banco de dados puramente falando, mas na realidade
-sao DBMS.
+**1) Qual o tipo de banco de dados?**
 
-**Exemplos:** 
+- Relacional;
+- Nao relacional;
+- Armazenamento de Documentos
+- Armazenamento chave-valor
+- Serie Temporal - muito usado em dados de monitoria;
+- Espacial - muito usado em dados geograficos.
+
+**2) Qual o DBMS - Database Management System (Sistema de Gerenciamento de Banco de Dados)?**
+é um sistema de software que permite que as pessoas criem, gerenciem e acessem bases de dados.
+
+**Exemplos:**
 - MySQL
 - PostgreSQL
 - Oracle Database
 - Microsoft SQL Server
-- MongoDB (NoSQL)
+- MongoDB
+- Redis
 
-**Tipos de banco de dados:**
-- Relacional;
-- Nao relacional;
-  - Armazenamento de Documentos
-  - Armazenamento chave-valor
-- Serie Temporal - muito usado em dados de monitoria;
-- Espacial - muito usado em dados geograficos.
 
-**SQL (Structured Query Language)**
-É uma linguagem de consulta estruturada e uma linguagem de domínio específico, 
-desenvolvida para gerenciar dados relacionais em um sistema de gerenciamento de banco de dados.
-
-**2) Query (Consultar) E ORM's (Object-Relational Mapping ou Mapeamento Objeto-Relacional)**
-Para realizarmos consultas no banco de dados podemos fazer com SQL Puro ou utilizando ORM's.
- 
-Levando em consideração que a principal utilidade de um `ORM` é abstrair o uso direto de `SQL`, ele facilita a escrita e leitura das consultas ao adotar uma sintaxe mais próxima da linguagem de programação utilizada. Além disso, o `ORM` gerencia a conexão com o banco de dados e realiza a conversão automática dos dados em objetos manipuláveis no código. No entanto, é importante estar ciente de suas limitações: 
+**3) Utilizar ORM (para bancos relacionais) ou SQL Puro?**
+Levando em consideração que a principal utilidade de um `ORM` é abstrair o uso direto de `SQL`, ele facilita a escrita e leitura das consultas ao adotar uma sintaxe mais próxima da linguagem de programação utilizada. Além disso, o `ORM` gerencia a conexão com o banco de dados e realiza a conversão automática dos dados em objetos manipuláveis no código. No entanto, é importante estar ciente de suas limitações:
 - Consultas muito complexas ou que envolvem grandes volumes de dados podem apresentar lentidão, tornando-se menos eficientes em termos de performance se comparadas ao uso direto de `SQL`;
 - Algumas operações avançadas podem não ser suportadas ou ser difíceis de implementar apenas com o `ORM`, exigindo, em certos casos, o uso de `SQL` puro para maior controle e eficiência.
+
+**SQL (Structured Query Language)**
+É uma linguagem de consulta estruturada e uma linguagem de domínio específico, desenvolvida para gerenciar dados relacionais em um sistema de gerenciamento de banco de dados.
+It is the standard language used to interact with relational databases.
+
+**With SQL, you can:**
+- Create and modify database structures (DDL – Data Definition Language)
+- Insert, query, update, and delete data (DML – Data Manipulation Language)
+- Control access and manage transactions
 
 
 **Exemplo Query Pura:**
@@ -704,18 +729,20 @@ SELECT count(*) FROM users;
 User.count()
 ```
 
-**3) Migrations**
-**Migrations (ou migrações)** são scripts ou arquivos que descrevem as alterações estruturais no banco de dados de forma controlada e versionada.
 
-As migrações ajudam a transicionar o esquema do banco de dados do seu estado atual para um novo estado desejado: 
-- adicionando tabelas e colunas; 
-- removendo elementos; 
-- dividindo campos; ou 
+**4) Utilizar Migrations?**
+Migrations são scripts ou arquivos que descrevem as alterações estruturais no banco de dados de forma controlada e versionada.
+Migrations are a way to version and manage changes to a database schema over time, using code.
+
+As migrações ajudam a transicionar o esquema do banco de dados do seu estado atual para um novo estado desejado:
+- adicionando tabelas e colunas;
+- removendo elementos;
+- dividindo campos; ou
 - alterando tipos e restrições.
 
+
 ## Virtual Machine x Docker
-`Máquinas virtuais` e tecnologias como o `Docker` surgiram para resolver problemas de **incompatibilidade de 
-ambiente** ao hospedar e executar projetos em diferentes hosts. Cada máquina (ou servidor) pode ter configurações únicas, como:
+`Máquinas virtuais` e tecnologias como o `Docker` surgiram para resolver problemas de **incompatibilidade de ambiente** ao hospedar e executar projetos em diferentes hosts. Cada máquina (ou servidor) pode ter configurações únicas, como:
 - Hardware distinto;
 - Sistemas operacionais variados;
 - Patches de segurança em versões diferentes;
@@ -724,10 +751,8 @@ ambiente** ao hospedar e executar projetos em diferentes hosts. Cada máquina (o
 - Idioma do sistema operacional;
 - Configurações de fuso horário;
 
-Essas diferenças podem causar comportamentos inesperados, erros ou falhas de execução quando o projeto é movido de um 
-ambiente de desenvolvimento para produção, ou entre diferentes times.
-Ao encapsular uma aplicação com todas as suas dependências e configurações necessárias, o `Docker` — e as `máquinas virtuais` em geral — permitem que o 
-software seja executado de forma consistente e previsível, independentemente do ambiente do host.
+Essas diferenças podem causar comportamentos inesperados, erros ou falhas de execução quando o projeto é movido de um ambiente de desenvolvimento para produção, ou entre diferentes times.
+Ao encapsular uma aplicação com todas as suas dependências e configurações necessárias, o `Docker` — e as `máquinas virtuais` em geral — permitem que o software seja executado de forma consistente e previsível, independentemente do ambiente do host.
 
 ### Virtual Machine - Surgimento 2007
 O principal problema das máquinas virtuais é que elas consomem muitos recursos do sistema, especialmente memória e CPU. 
@@ -780,15 +805,15 @@ sem a necessidade de utilizar uma VM.
 
 ## CPUs (Central Processing Units) and GPUs (Graphics Processing Units). 
 
+**CPU**
 The CPU is often described as the “brain” of the computer because it handles a wide variety of computational tasks necessary for the system to operate. 
 It executes the instructions of computer programs through a fetch-decode-execute cycle. 
 These processors manage everything from basic arithmetic and logical operations to system control and input/output management.
 Processors like the **Intel Core** series or **AMD Ryzen** series are designed for versatility, efficiently handling diverse workloads.
 
+**GPU**
 Initially developed to accelerate the rendering of images, videos, and 3D graphics, the GPU has evolved into a powerful processor optimized 
-for parallel computation. It is the reason behind the Generate AI boom that the world has seen in the last 3 years. G
-PUs contain thousands of smaller, specialized cores designed to perform many calculations simultaneously. 
-This massively parallel architecture makes them exceptionally efficient not only for graphic designing but for other tasks involving high computation.
+for parallel computation. It is the reason behind the Generate AI boom that the world has seen in the last 3 years. GPUs contain thousands of smaller, specialized cores designed to perform many calculations simultaneously. This massively parallel architecture makes them exceptionally efficient not only for graphic designing but for other tasks involving high computation.
 High-performance GPU examples include the **NVIDIA Blackwell B200,** **RTX4090**, and **AMD Radeon RX series** support AI development, gaming, graphic designing, and more
 
 ![CPU X GPU](https://cdn.analyticsvidhya.com/wp-content/uploads/2025/05/Info-2.webp)  
@@ -868,3 +893,145 @@ psql --host=localhost --username=postgres --port=5333
 1) ctrl + p => possibilita pesquisar os arquivos do nosso projeto pelo nome.
 - Mostra uma lista de arquivos com o nome do input.
 - Tambem e possivel selecionar um campo dentro do arquivo exemplo: package@scripts
+
+## MVC - Model Viewl Controller
+O fluxo básico no padrão MVC é:
+Controller → Model → Controller → View
+
+1) Controllers 
+O fluxo começa no **controller**, que recebe a **requisição do usuário** (por exemplo, uma requisição HTTP).
+Ele é responsável por **coordenar as operações entre um ou vários models**, e também decidir qual view deve ser renderizada.
+
+O controller **não executa regras de negócio diretamente**, ele apenas **orquestra** a lógica da aplicação usando os models.
+The controller does not execute business logic directly; it simply orchestrates the application flow by using the models.
+
+```js
+// produtoController.js
+const Produto = require('./produtoModel');
+
+function listarProdutos(req, res) {
+  const produtos = Produto.listarProdutos();
+  res.json(produtos); // responde com os dados para a view (aqui em JSON)
+}
+
+module.exports = { listarProdutos };
+```
+
+2) Models
+O **model** é responsável por representar a **lógica de negócio** e **interagir** com o **banco de dados**.
+Ele **computa, valida e manipula os dados** da aplicação.
+
+```js
+// produtoModel.js
+const produtos = [
+  { nome: 'Camiseta', preco: 50 },
+  { nome: 'Tênis', preco: 200 },
+];
+
+function listarProdutos() {
+  return produtos;
+}
+
+module.exports = { listarProdutos };
+```
+
+3) View
+A view é responsável por **apresentar os dados ao usuário**, geralmente em forma de **HTML, JSON** ou outro formato.
+Ela **não contém lógica de negócio**, apenas exibe os dados que foram preparados pelo controller.
+
+```js
+// app.js
+const express = require('express');
+const app = express();
+const produtoController = require('./produtoController');
+
+app.get('/produtos', produtoController.listarProdutos);
+
+app.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
+```
+
+
+## TDD - Test Driven Development
+TDD (Desenvolvimento Guiado por Testes) é uma técnica de desenvolvimento de software onde você escreve testes antes do código funcional.
+
+
+### Estagios do TDD
+
+1) Red
+Write a test that fails (because the code doesn’t exist yet).
+
+2) Green
+Write the minimum code needed to make the test pass.
+
+3) Refactor
+Improve the code without changing behavior, and ensure the test still passes.
+
+
+## Outro
+
+### 3 formas de escrever uma `query`
+
+- Query sem parametros;
+**Exemplo:**
+```ts
+const dbVersionResult = await database.query({ text: 'SHOW server_version;' });
+const dbMaxConnResult = await database.query({ text: 'SHOW max_connections' });
+```
+
+- Query com parametros fixos; e
+**Exemplo:**
+```ts
+  const totalConnResult = await database.query({ text: "SELECT * FROM pg_stat_activity WHERE datname = 'local_db';" });
+```
+
+- Query com parametros dinamicos, passivel de SQL Injection.
+**Exemplo:**
+
+Exemplo nao e passivel de SQL Injection.
+```ts
+  const databaseName = process.env.POSTGRES_DB
+  const totalConnResult = await database.query({ text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}';` });
+```
+
+Exemplo com SQL Injection
+```ts
+fetch("http://localhost:800/api/v1/status?databaseName='; SELECT pg_sleep(4); --")
+
+export default async function status(request: NextApiRequest, response: NextApiResponse) {
+  const updatedAt = new Date().toISOString()
+  const databaseName = process.env.POSTGRES_DB
+  
+  const dbVersionResult = await database.query({ text: 'SHOW server_version;' });
+  const dbMaxConnResult = await database.query({ text: 'SHOW max_connections;' });
+  const totalConnResult = await database.query({ text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}';` });
+
+  const dbVersionValue = dbVersionResult?.rows[0].server_version
+  const dbMaxConnValue = dbMaxConnResult?.rows[0].max_connections
+  const totalConnValue = totalConnResult?.rows[0].count
+  
+  response.status(200).json({
+    updated_at: updatedAt,
+    dependencies: {
+      database: {
+        version: dbVersionValue,
+        max_connections: parseInt(dbMaxConnValue),
+        total_connections: totalConnValue,
+      }
+    }
+  })
+}
+```
+
+
+### PostgreSQL
+- `pg_stat_activity` e `pg_stat_database`: são duas views do banco de dados, ou seja, são tabelas tradicionais que só é possível visualizar e não alterar.
+  - A `pg_stat_activity` traz informações em tempo real com nível de detalhe muito maior, como por exemplo o IP de quem está conectado. 
+
+**Uma diferença entre o `PostgreSQL` e o `MySQL`:**
+- `PostgreSQL`: ao se conectar, a sessão precisa estar vinculada a um banco de dados.
+- `MySQL`: ao se conectar, é possível acessar o backend e depois especificar qual banco de dados usar.
+
+### Query Sanitization ou Limpeza de Consulta
+https://node-postgres.com/features/queries
