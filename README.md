@@ -77,6 +77,8 @@
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
     - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
+  - [Provedores de banco de dados](#provedores-de-banco-de-dados)
+    - [Desmembrando a URL de uma DB](#desmembrando-a-url-de-uma-db)
 
 ## Node.js
 
@@ -1035,3 +1037,18 @@ export default async function status(request: NextApiRequest, response: NextApiR
 
 ### Query Sanitization ou Limpeza de Consulta
 https://node-postgres.com/features/queries
+
+
+## Provedores de banco de dados
+
+**ElephantSQL (descontinuado)**
+
+**mkdb (somente para desenvolvimento)**
+(conta mkdb)[https://www.mkdb.sh/dashboard/database/cmbfotfuc000euwe0gtspq7ty/manage]
+
+**Neon (gratuito)**
+
+**DigitalOcean (pago)**
+
+### Desmembrando a URL de uma DB
+postgres://meuuser:minhasenha@meuhost.sobralnet.com:5432/meubanco

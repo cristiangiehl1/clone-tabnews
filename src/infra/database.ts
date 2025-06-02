@@ -15,12 +15,12 @@ async function query(queryObj: QueryConfig) {
     password: process.env.POSTGRES_PASSWORD,
   })
   
-  await client.connect()
-
   try {
+    await client.connect()
     return await client.query(queryObj)
   } catch (err) {
     console.error(err)
+    throw err
   } finally {
     await client.end()
   }
