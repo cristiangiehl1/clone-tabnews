@@ -79,6 +79,12 @@
     - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
   - [Provedores de banco de dados](#provedores-de-banco-de-dados)
     - [Desmembrando a URL de uma DB](#desmembrando-a-url-de-uma-db)
+    - [SSL - Secure Sockets Layer](#ssl---secure-sockets-layer)
+    - [Self-signed certificate](#self-signed-certificate)
+  - [Database Schema Migrations](#database-schema-migrations)
+    - [Arquivos de Migracao](#arquivos-de-migracao)
+    - [Framework de Migracao](#framework-de-migracao)
+    - [`node-pg-migrate`](#node-pg-migrate)
 
 ## Node.js
 
@@ -1050,6 +1056,61 @@ https://node-postgres.com/features/queries
 (conta neon)[https://console.neon.tech/app/projects/fragrant-voice-95124848?database=neondb]
 
 **DigitalOcean (pago)**
+(site digital ocean)[https://www.digitalocean.com/]
+
+Precisa configurar um  **self-signed certificate** in certificate chain (certificado autoassinado na cadeira de certificados)
 
 ### Desmembrando a URL de uma DB
 postgres://meuuser:minhasenha@meuhost.sobralnet.com:5432/meubanco
+
+### SSL - Secure Sockets Layer
+é um protocolo de segurança que criptografa a comunicação entre um cliente (como um navegador ou app) e um servidor (como um site ou banco de dados).
+
+### Self-signed certificate
+O erro que estamos enfrentando acontece porque **nossa aplicação não confia no certificado que a DigitalOcean apresentou** durante a tentativa de conexão com o banco de dados. Isso acontece porque o certificado é **autoassinado** ou não é reconhecido como confiável por padrão.
+
+**Autoridade Certificadora (CA)**
+Para resolver isso, **precisamos obter o certificado da DigitalOcean** (ou da autoridade que emitiu o certificado usado por ela). Assim, nossa aplicação poderá:
+- Validar a identidade do servidor do banco de dados;
+- Estabelecer uma conexão segura e confiável;
+- Garantir que apenas a DigitalOcean e nosso servidor consigam interpretar os dados transmitidos.
+
+Com o certificado configurado corretamente, todas as conexões futuras com o banco estarão protegidas contra interceptações e acessos não autorizados.
+
+
+## Database Schema Migrations
+**Migrations** são scripts ou arquivos que descrevem as alterações estruturais no banco de dados de forma controlada e versionada.
+**Migrations** are a way to version and manage changes to a database schema over time, using code.
+
+As migrações ajudam a transicionar o esquema do banco de dados do seu estado atual para um novo estado desejado:
+- adicionando tabelas e colunas;
+- removendo elementos;
+- dividindo campos; ou
+- alterando tipos e restrições.
+
+### Arquivos de Migracao
+Defini a **orderm** das alteracoes que vao ser feitas e as **alteracoes** em si.
+
+### Framework de Migracao
+Garantir que os arquivos vao ser lidos e executados na ordem e **um unica vez**.
+
+Vamos utilizar o `node-pg-migrate` como framework.
+
+
+### `node-pg-migrate` 
+Se por acaso alguem estiver fazendo o projeto com `typescript` tem como criar os arquivos com a extensao correta `.ts`, basta modificar o seu script de `migration:create`:
+
+```json
+"migration:create": "node-pg-migrate --migrations-dir infra/migrations --migration-file-language ts create"
+```
+
+Tambem sera necessario alterar os scripts de `migration:up` e `migration:down`, pois precisamos especificar o path do nosso `tsconfig.json`. Sendo assim os dois scripts alterados ficam como:
+
+```json
+"migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json up",
+"migration:down": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json down"
+```
+
+Eu testei aqui e as migrations rodaram normalmente. Caso estejam usando o `pgAdmin4`, após registrarem o banco do `TabNews - Local`, vocês podem observar, dentro do `schema`, que será criada uma nova tabela com o nome de `pgmigrations`, onde ficarão registradas todas as migrations que foram executadas no banco de dados.
+
+Dessa forma, o `node-pg-migrate` consegue controlar e organizar quais migrations já foram executadas e quais ele deve pular, evitando rodá-las em duplicidade.
