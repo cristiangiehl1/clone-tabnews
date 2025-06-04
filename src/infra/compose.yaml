@@ -6,3 +6,4 @@ services:
     ports:
       # HOST:CONTAINER (DEFAULT POSTGRES VALUE)
       - "5333:5432"
+  

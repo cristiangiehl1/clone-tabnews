@@ -2,6 +2,18 @@ import { Client, type QueryConfig } from 'pg'
 
 
 async function query(queryObj: QueryConfig) {
+  const client = await getNewClient()
+  try {
+    return await client.query(queryObj)
+  } catch (err) {
+    console.error(err)
+    throw err
+  } finally {
+    await client.end()
+  }
+}
+
+async function getNewClient() {
   const portEnv = process.env.POSTGRES_PORT;
   if (!portEnv) {
     throw new Error("POSTGRES_PORT is not defined in environment variables");
@@ -15,20 +27,14 @@ async function query(queryObj: QueryConfig) {
     password: process.env.POSTGRES_PASSWORD,
     ssl: getSSLValues()
   })
-  
-  try {
-    await client.connect()
-    return await client.query(queryObj)
-  } catch (err) {
-    console.error(err)
-    throw err
-  } finally {
-    await client.end()
-  }
+
+  await client.connect()
+  return client
 }
 
 export default {
-  query
+  query,
+  getNewClient,
 }
 
 function getSSLValues() {

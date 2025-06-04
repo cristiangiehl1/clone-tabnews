@@ -68,15 +68,12 @@
     - [Imagem do banco de dados](#imagem-do-banco-de-dados)
   - [Instalando o `psql`](#instalando-o-psql)
   - [Jest](#jest)
+    - [Rodando o Jest de forma linear](#rodando-o-jest-de-forma-linear)
   - [Como remover dados sensiveis do seu repositorio](#como-remover-dados-sensiveis-do-seu-repositorio)
   - [Atalhos](#atalhos)
   - [MVC - Model Viewl Controller](#mvc---model-viewl-controller)
   - [TDD - Test Driven Development](#tdd---test-driven-development)
     - [Estagios do TDD](#estagios-do-tdd)
-  - [Outro](#outro)
-    - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
-    - [PostgreSQL](#postgresql)
-    - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
   - [Provedores de banco de dados](#provedores-de-banco-de-dados)
     - [Desmembrando a URL de uma DB](#desmembrando-a-url-de-uma-db)
     - [SSL - Secure Sockets Layer](#ssl---secure-sockets-layer)
@@ -85,6 +82,18 @@
     - [Arquivos de Migracao](#arquivos-de-migracao)
     - [Framework de Migracao](#framework-de-migracao)
     - [`node-pg-migrate`](#node-pg-migrate)
+      - [Dry Run](#dry-run)
+      - [Live Run](#live-run)
+      - [Rollback de banco de dados](#rollback-de-banco-de-dados)
+      - [Clearing the database between tests](#clearing-the-database-between-tests)
+  - [Next](#next)
+    - [SWC (Speedy Web Compiler)](#swc-speedy-web-compiler)
+    - [Next + Jest](#next--jest)
+  - [Outro](#outro)
+    - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
+    - [PostgreSQL](#postgresql)
+    - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
+    - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env)
 
 ## Node.js
 
@@ -889,6 +898,16 @@ psql --host=localhost --username=postgres --port=5333
 ## Jest
 - a flag `--watch` vai rodar somente nos tests que sofrerem alguma mudanca.
 - a flag `--watchAll` vai rodar em todos os testes.
+- a flag `-- migrations` vai rodar somente os testes daquele folder.
+
+
+### Rodando o Jest de forma linear
+Isso faz o jest rodar os testes `sequencialmente`, o comportamento default dele e rodar em `paralelo`.
+
+```json
+"test": "jest --runInBand",
+"test:watch": "jest --watchAll --runInBand",
+```
 
 ## Como remover dados sensiveis do seu repositorio
 [Remover dados confidenciais de um repositorio](https://docs.github.com/pt/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
@@ -977,73 +996,6 @@ Write the minimum code needed to make the test pass.
 Improve the code without changing behavior, and ensure the test still passes.
 
 
-## Outro
-
-### 3 formas de escrever uma `query`
-
-- Query sem parametros;
-**Exemplo:**
-```ts
-const dbVersionResult = await database.query({ text: 'SHOW server_version;' });
-const dbMaxConnResult = await database.query({ text: 'SHOW max_connections' });
-```
-
-- Query com parametros fixos; e
-**Exemplo:**
-```ts
-  const totalConnResult = await database.query({ text: "SELECT * FROM pg_stat_activity WHERE datname = 'local_db';" });
-```
-
-- Query com parametros dinamicos, passivel de SQL Injection.
-**Exemplo:**
-
-Exemplo nao e passivel de SQL Injection.
-```ts
-  const databaseName = process.env.POSTGRES_DB
-  const totalConnResult = await database.query({ text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}';` });
-```
-
-Exemplo com SQL Injection
-```ts
-fetch("http://localhost:800/api/v1/status?databaseName='; SELECT pg_sleep(4); --")
-
-export default async function status(request: NextApiRequest, response: NextApiResponse) {
-  const updatedAt = new Date().toISOString()
-  const databaseName = process.env.POSTGRES_DB
-  
-  const dbVersionResult = await database.query({ text: 'SHOW server_version;' });
-  const dbMaxConnResult = await database.query({ text: 'SHOW max_connections;' });
-  const totalConnResult = await database.query({ text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}';` });
-
-  const dbVersionValue = dbVersionResult?.rows[0].server_version
-  const dbMaxConnValue = dbMaxConnResult?.rows[0].max_connections
-  const totalConnValue = totalConnResult?.rows[0].count
-  
-  response.status(200).json({
-    updated_at: updatedAt,
-    dependencies: {
-      database: {
-        version: dbVersionValue,
-        max_connections: parseInt(dbMaxConnValue),
-        total_connections: totalConnValue,
-      }
-    }
-  })
-}
-```
-
-
-### PostgreSQL
-- `pg_stat_activity` e `pg_stat_database`: são duas views do banco de dados, ou seja, são tabelas tradicionais que só é possível visualizar e não alterar.
-  - A `pg_stat_activity` traz informações em tempo real com nível de detalhe muito maior, como por exemplo o IP de quem está conectado. 
-
-**Uma diferença entre o `PostgreSQL` e o `MySQL`:**
-- `PostgreSQL`: ao se conectar, a sessão precisa estar vinculada a um banco de dados.
-- `MySQL`: ao se conectar, é possível acessar o backend e depois especificar qual banco de dados usar.
-
-### Query Sanitization ou Limpeza de Consulta
-https://node-postgres.com/features/queries
-
 
 ## Provedores de banco de dados
 
@@ -1114,3 +1066,126 @@ Tambem sera necessario alterar os scripts de `migration:up` e `migration:down`, 
 Eu testei aqui e as migrations rodaram normalmente. Caso estejam usando o `pgAdmin4`, após registrarem o banco do `TabNews - Local`, vocês podem observar, dentro do `schema`, que será criada uma nova tabela com o nome de `pgmigrations`, onde ficarão registradas todas as migrations que foram executadas no banco de dados.
 
 Dessa forma, o `node-pg-migrate` consegue controlar e organizar quais migrations já foram executadas e quais ele deve pular, evitando rodá-las em duplicidade.
+
+
+#### Dry Run
+O Uma **simulação** da execução da migration, **sem** aplicar nenhuma mudança real no banco.
+Permite que você veja quais comandos SQL seriam executados, ajudando a identificar possíveis problemas antes de modificar o banco de dados de verdade.
+
+#### Live Run
+A execução de fato da migration — as alterações são aplicadas no banco de dados.
+
+#### Rollback de banco de dados
+https://octopus.com/blog/database-rollbacks-pitfalls
+
+
+#### Clearing the database between tests
+https://calpaterson.com/against-database-teardown.html
+
+
+## Next 
+O compilador **Next.js**, escrito em **Rust** usando **SWC**, permite que o Next.js transforme e minimize seu código JavaScript para produção. Isso **substitui** o **Babel** para arquivos individuais e o **Terser** para minimizar pacotes de saída.
+
+A compilação usando o compilador Next.js é 17x mais rápida que o Babel e está habilitada por padrão desde a versão 12 do Next.js. Se você tiver uma configuração Babel existente ou estiver usando recursos não suportados , seu aplicativo desativará o compilador Next.js e continuará usando o Babel.
+
+[doc oficial do next](https://nextjs.org/docs/architecture/nextjs-compiler)
+
+### SWC (Speedy Web Compiler)
+SWC is an extensible **Rust-based** platform for the next generation of fast developer tools. It’s used by tools like **Next.js**, Parcel, and Deno, as well as companies like **Vercel**, ByteDance, Tencent, **Shopify**, Trip.com, and more.
+
+SWC can be used for both **compilation** and **bundling**. For compilation, it **takes JavaScript / TypeScript** files using modern JavaScript features and outputs valid code that is supported by all major browsers.
+
+[site oficial](https://swc.rs/)
+
+### Next + Jest
+[doc oficial do next](https://nextjs.org/docs/app/guides/testing/jest)
+
+
+O submodulo que importamos do `Next` para dentro do `Jest` por padrao nao carrega as variaveis de ambientes do `.env.development` em ambiente de test. 
+
+## Outro
+
+### 3 formas de escrever uma `query`
+
+- Query sem parametros;
+**Exemplo:**
+```ts
+const dbVersionResult = await database.query({ text: 'SHOW server_version;' });
+const dbMaxConnResult = await database.query({ text: 'SHOW max_connections' });
+```
+
+- Query com parametros fixos; e
+**Exemplo:**
+```ts
+  const totalConnResult = await database.query({ text: "SELECT * FROM pg_stat_activity WHERE datname = 'local_db';" });
+```
+
+- Query com parametros dinamicos, passivel de SQL Injection.
+**Exemplo:**
+
+Exemplo nao e passivel de SQL Injection.
+```ts
+  const databaseName = process.env.POSTGRES_DB
+  const totalConnResult = await database.query({ text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}';` });
+```
+
+Exemplo com SQL Injection
+```ts
+fetch("http://localhost:800/api/v1/status?databaseName='; SELECT pg_sleep(4); --")
+
+export default async function status(request: NextApiRequest, response: NextApiResponse) {
+  const updatedAt = new Date().toISOString()
+  const databaseName = process.env.POSTGRES_DB
+  
+  const dbVersionResult = await database.query({ text: 'SHOW server_version;' });
+  const dbMaxConnResult = await database.query({ text: 'SHOW max_connections;' });
+  const totalConnResult = await database.query({ text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname = '${databaseName}';` });
+
+  const dbVersionValue = dbVersionResult?.rows[0].server_version
+  const dbMaxConnValue = dbMaxConnResult?.rows[0].max_connections
+  const totalConnValue = totalConnResult?.rows[0].count
+  
+  response.status(200).json({
+    updated_at: updatedAt,
+    dependencies: {
+      database: {
+        version: dbVersionValue,
+        max_connections: parseInt(dbMaxConnValue),
+        total_connections: totalConnValue,
+      }
+    }
+  })
+}
+```
+
+### PostgreSQL
+- `pg_stat_activity` e `pg_stat_database`: são duas views do banco de dados, ou seja, são tabelas tradicionais que só é possível visualizar e não alterar.
+  - A `pg_stat_activity` traz informações em tempo real com nível de detalhe muito maior, como por exemplo o IP de quem está conectado. 
+
+**Uma diferença entre o `PostgreSQL` e o `MySQL`:**
+- `PostgreSQL`: ao se conectar, a sessão precisa estar vinculada a um banco de dados.
+- `MySQL`: ao se conectar, é possível acessar o backend e depois especificar qual banco de dados usar.
+
+### Query Sanitization ou Limpeza de Consulta
+https://node-postgres.com/features/queries
+Ele está destacando que a interpolação de valores dinâmicos na query está sendo feita da forma correta e segura — ou seja, usando placeholders ($1, $2, etc.) e passando os valores separados por meio do array values.
+
+```ts
+database.query({
+  text: "SELECT * FROM users WHERE email = $1;",
+  values: ["exemplo@email.com"]
+});
+```
+
+
+### Como usar interpolacao em arquivos `.env`
+Instalando a expansao do dotenv `dotenv-expand`.
+Dotenv-expand adds variable expansion on top of dotenv. 
+
+```bash
+npm install dotenv-expand --save
+```
+
+```txt
+DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
+```
