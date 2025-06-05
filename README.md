@@ -89,11 +89,13 @@
   - [Next](#next)
     - [SWC (Speedy Web Compiler)](#swc-speedy-web-compiler)
     - [Next + Jest](#next--jest)
+  - [Como funciona as `branches` do `git`](#como-funciona-as-branches-do-git)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
     - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
     - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env)
+    - [Blob - Binary Large Object](#blob---binary-large-object)
 
 ## Node.js
 
@@ -1103,6 +1105,60 @@ SWC can be used for both **compilation** and **bundling**. For compilation, it *
 
 O submodulo que importamos do `Next` para dentro do `Jest` por padrao nao carrega as variaveis de ambientes do `.env.development` em ambiente de test. 
 
+## Como funciona as `branches` do `git`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Outro
 
 ### 3 formas de escrever uma `query`
@@ -1189,3 +1245,8 @@ npm install dotenv-expand --save
 ```txt
 DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
 ```
+
+### Blob - Binary Large Object
+É um tipo de dado usado para armazenar grandes quantidades de dados binários — como imagens, vídeos, PDFs, áudios ou qualquer arquivo binário — que não são facilmente representados como texto.
+
+No **JavaScript** (especialmente no front-end), Blob é um objeto que representa dados **binários imutáveis**, geralmente usado para **criar arquivos** dinamicamente ou **manipular imagens, vídeos**, etc. sem precisar de arquivos reais no disco.
