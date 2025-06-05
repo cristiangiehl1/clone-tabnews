@@ -1,6 +1,3 @@
-"use client"
-
-
 export default function Home() {
   // const divRef = useRef<HTMLDivElement | null>(null)
 

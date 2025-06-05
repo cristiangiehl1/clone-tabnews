@@ -96,6 +96,7 @@
     - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
     - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env)
     - [Blob - Binary Large Object](#blob---binary-large-object)
+    - [Comando interessante para usar no curl](#comando-interessante-para-usar-no-curl)
 
 ## Node.js
 
@@ -1250,3 +1251,11 @@ DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGR
 É um tipo de dado usado para armazenar grandes quantidades de dados binários — como imagens, vídeos, PDFs, áudios ou qualquer arquivo binário — que não são facilmente representados como texto.
 
 No **JavaScript** (especialmente no front-end), Blob é um objeto que representa dados **binários imutáveis**, geralmente usado para **criar arquivos** dinamicamente ou **manipular imagens, vídeos**, etc. sem precisar de arquivos reais no disco.
+
+
+### Comando interessante para usar no curl
+Adicionando o operador pipe `|` no nosso `curl` apos a url da request podemos redirecionar o output da request para a entrada do comando seguinte. Usando o `python3 -m` nos permite executar modulos do phyton como se fossem scripts e adicionando o `json.tool` ele vai formatar o json.
+
+```bash
+curl https://bitbites.com.br/api/v1/status | python3 -m json.tool
+```
