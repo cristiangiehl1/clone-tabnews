@@ -9,7 +9,7 @@
   - [TERMINAL - PORTS](#terminal---ports)
   - [Git](#git)
     - [Commandos](#commandos)
-      - [Extra](#extra)
+    - [Como recuperar uma branch deletada?](#como-recuperar-uma-branch-deletada)
     - [Estagios de um arquivo no Git](#estagios-de-um-arquivo-no-git)
     - [Como alterar um commit que ja foi para a origin](#como-alterar-um-commit-que-ja-foi-para-a-origin)
   - [Vercel](#vercel)
@@ -97,6 +97,8 @@
     - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env)
     - [Blob - Binary Large Object](#blob---binary-large-object)
     - [Comando interessante para usar no curl](#comando-interessante-para-usar-no-curl)
+    - [Comando de listar os arquivos](#comando-de-listar-os-arquivos)
+>>>>>>> Stashed changes
 
 ## Node.js
 
@@ -181,9 +183,79 @@ Permite configurar uma porta pública ou privada.
 
 - `git commit -am 'mensagem de commit'` - move todas as alteracoes para staging e commita elas.
 
-#### Extra
 
-`ls -l` - lista todos os arquivos na pasta mas de forma vertical.
+### Como recuperar uma branch deletada?
+Vamos supor que voce delete uma `branch` que nao deveria, e agora?
+
+```bash
+git branch -d test-staging-deployment
+```
+resposta 
+```bash
+warning: deleting branch 'test-staging-deployment' that has been merged to
+         'refs/remotes/origin/test-staging-deployment', but not yet merged to HEAD
+Deleted branch test-staging-deployment (was 9de0074). <---- aqui quando ele deleta ele avisa qual foi o ultimo commit da branch
+```
+
+O `git` na verdade esta excluindo apenas o ponteiro daquela branch, mas o commit continua intacto. Voce pode pegar o hash daquele ultimo commit e pronto, todas as mudancas feitas nele estarao la.
+
+```bash
+git checkout 9de0074
+```
+O problema e que o commit esta `dangling` (pendurado), nao e possivel chegar nele atraves de uma branch, apenas pelo hash dele. O `git` tem garbage collection que vai deletar todos os commits que estao `dangling` por mais de 14 dias (tempo default).
+Para resolver isso basta apontar uma branch para esse commit com o comando normal de criar branch. **Importante criar a branch a partir do commit**.
+
+```bash
+git checkout -b test-staging-deployment
+```
+
+Pronto, problema resolvido.
+
+E como recuperar o hash do commit quando nao tenho o registro do hash??
+
+```bash
+git reflog
+```
+
+Assim voce recebe todos os registros de atualizacoes que foram sendo feitas no git.
+
+```bash
+9de0074 (HEAD -> test-staging-deployment, origin/test-staging-deployment) HEAD@{0}: checkout: moving from 9de00740e541c0e6e2f93cde0c6e46047a8b7575 to test-staging-deployment
+9de0074 (HEAD -> test-staging-deployment, origin/test-staging-deployment) HEAD@{1}: checkout: moving from main to 9de0074
+b63f01c (origin/main, main) HEAD@{2}: reset: moving to HEAD
+b63f01c (origin/main, main) HEAD@{3}: checkout: moving from test-staging-deployment to main
+9de0074 (HEAD -> test-staging-deployment, origin/test-staging-deployment) HEAD@{4}: commit: fix `/migrations` endpoint connection bug
+c5761ce HEAD@{5}: commit: test staging deployment
+782c09e (origin/fix-migrations-endpoint, fix-migrations-endpoint) HEAD@{6}: checkout: moving from fix-migrations-endpoint to test-staging-deployment
+782c09e (origin/fix-migrations-endpoint, fix-migrations-endpoint) HEAD@{7}: commit: fix migrations db connection clycle
+b63f01c (origin/main, main) HEAD@{8}: checkout: moving from main to fix-migrations-endpoint
+b63f01c (origin/main, main) HEAD@{9}: commit: add `api/vi/migrations` endpoint
+49225b6 HEAD@{10}: commit: adds migration scripts
+65499b2 HEAD@{11}: commit: adds ssl to database connections
+d676357 HEAD@{12}: commit: adds to `database.ts` try-catch block for error handling
+2ad6769 HEAD@{13}: reset: moving to HEAD~1
+ddc5867 HEAD@{14}: commit: adds production envs
+2ad6769 HEAD@{15}: commit: make `database.js` more robust to error and finish `/api/v1/status endpoint
+b39130e HEAD@{16}: commit: adds new scripts - `services:up`, `services:stop` and `services:down`
+a3e1400 HEAD@{17}: commit: moved `models`, `infra` and `tests` to `src`
+277d2ce HEAD@{18}: commit: add `database.js` and `.env.development`
+c3bc3aa HEAD@{19}: commit: adds `/api/v1/status` endpoint`
+d2a8ede HEAD@{20}: commit: install: `jest` and configure test scipts
+55650ef HEAD@{21}: commit (amend): adds `.prettierignore`
+d8cae7b HEAD@{22}: commit: adds `.prettierignore`
+ca8129b HEAD@{23}: commit: adds scripts `lint:check` and `lint:fix`
+458d294 HEAD@{24}: commit: adiciona arquivo `.editorconfig`
+7af5384 HEAD@{25}: commit (amend): substituindo a mensagem inicial do commit
+908cd70 HEAD@{26}: commit (amend): chore: added git class initial commit
+fbf4769 HEAD@{27}: commit (amend): chore: added git class initial commit
+f232c81 HEAD@{28}: commit (initial): chore: added git class initial commit
+```
+Desta forma, voce precisa somente saber a mensagem referente ao commit que voce quer recuperar. Caso nao saiba isso amigao, so lamento. kkkkkkk
+Apos pegar o hash do commit e possivel criar uma branch informando o commit que voce quer usar como base.
+
+```bash
+git checkout -b test-staging-deployment 9de0074
+```
 
 ### Estagios de um arquivo no Git
 
@@ -1247,6 +1319,7 @@ npm install dotenv-expand --save
 DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
 ```
 
+<<<<<<< Updated upstream
 ### Blob - Binary Large Object
 É um tipo de dado usado para armazenar grandes quantidades de dados binários — como imagens, vídeos, PDFs, áudios ou qualquer arquivo binário — que não são facilmente representados como texto.
 
@@ -1259,3 +1332,8 @@ Adicionando o operador pipe `|` no nosso `curl` apos a url da request podemos re
 ```bash
 curl https://bitbites.com.br/api/v1/status | python3 -m json.tool
 ```
+=======
+### Comando de listar os arquivos
+
+`ls -l` - lista todos os arquivos na pasta mas de forma vertical.
+>>>>>>> Stashed changes
