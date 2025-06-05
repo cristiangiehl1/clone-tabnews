@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react";
 
 export default function Home() {
-  const divRef = useRef<HTMLDivElement | null>(null)
+  // const divRef = useRef<HTMLDivElement | null>(null)
 
   // useEffect(() => {
   //   const text = new Blob(["Hello world!"], { type: 'text/plain' })
@@ -18,7 +17,7 @@ export default function Home() {
 
 
   return (
-    <div ref={divRef}>
+    <div>
       <h1>Testando Blob</h1>
     </div>
   );
