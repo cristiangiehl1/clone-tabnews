@@ -9,9 +9,9 @@
   - [TERMINAL - PORTS](#terminal---ports)
   - [Git](#git)
     - [Commandos](#commandos)
-    - [Como recuperar uma branch deletada?](#como-recuperar-uma-branch-deletada)
     - [Estagios de um arquivo no Git](#estagios-de-um-arquivo-no-git)
     - [Como alterar um commit que ja foi para a origin](#como-alterar-um-commit-que-ja-foi-para-a-origin)
+    - [Como recuperar uma branch deletada?](#como-recuperar-uma-branch-deletada)
   - [Vercel](#vercel)
   - [DNS (Domain Name System)](#dns-domain-name-system)
     - [Como o computador sabe o IP de uma DNS?](#como-o-computador-sabe-o-ip-de-uma-dns)
@@ -98,6 +98,11 @@
     - [Blob - Binary Large Object](#blob---binary-large-object)
     - [Comando interessante para usar no curl](#comando-interessante-para-usar-no-curl)
     - [Comando de listar os arquivos](#comando-de-listar-os-arquivos)
+  - [Agile is Dead](#agile-is-dead)
+  - [Estrategias de Branch](#estrategias-de-branch)
+    - [Trunk-based Development](#trunk-based-development)
+    - [Feature Branch (Github Flow)](#feature-branch-github-flow)
+    - [Git Flow](#git-flow)
 >>>>>>> Stashed changes
 
 ## Node.js
@@ -183,6 +188,39 @@ Permite configurar uma porta pública ou privada.
 
 - `git commit -am 'mensagem de commit'` - move todas as alteracoes para staging e commita elas.
 
+### Estagios de um arquivo no Git
+
+1. 🟠 Modified (Modificado)
+   O arquivo foi alterado, mas ainda não foi adicionado à staging area.
+   O Git detecta que houve uma mudança, mas ela ainda não está pronta para ser commitada.
+
+`git status` - mostra os arquivos que foram modificados mas ainda nao foram para staging em `vermelho` e os que foram modificados e estao em staging em `verde`.
+
+2. 🟢 Staged (Preparado)
+   O arquivo foi adicionado à staging area com `git add`.
+   Ele está pronto para ser incluído no próximo commit.
+   Você usa o comando `git add index.js` para adicionar um arquivo em especifico.
+
+3. ✅ Committed
+   A alteração foi registrada no repositório local com `git commit`.
+   Agora ela faz parte do histórico oficial do projeto.
+
+```plaintext
+[Working Directory]
+     ↓ (modifica o arquivo)
+  Modified
+     ↓ git add
+  Staged
+     ↓ git commit
+  Committed
+```
+
+### Como alterar um commit que ja foi para a origin
+
+1 - Fazer as alteracoes que deseja localmente.
+2 - Usar o comando `git commit --amend` para substituir o commit anterior por um novo.
+3 - O git apenas aceitara o push se usarmos a flag `-f` ou `--force`. **MUITO CUIDADO AO USAR ISSO**
+
 
 ### Como recuperar uma branch deletada?
 Vamos supor que voce delete uma `branch` que nao deveria, e agora?
@@ -256,39 +294,6 @@ Apos pegar o hash do commit e possivel criar uma branch informando o commit que 
 ```bash
 git checkout -b test-staging-deployment 9de0074
 ```
-
-### Estagios de um arquivo no Git
-
-1. 🟠 Modified (Modificado)
-   O arquivo foi alterado, mas ainda não foi adicionado à staging area.
-   O Git detecta que houve uma mudança, mas ela ainda não está pronta para ser commitada.
-
-`git status` - mostra os arquivos que foram modificados mas ainda nao foram para staging em `vermelho` e os que foram modificados e estao em staging em `verde`.
-
-2. 🟢 Staged (Preparado)
-   O arquivo foi adicionado à staging area com `git add`.
-   Ele está pronto para ser incluído no próximo commit.
-   Você usa o comando `git add index.js` para adicionar um arquivo em especifico.
-
-3. ✅ Committed
-   A alteração foi registrada no repositório local com `git commit`.
-   Agora ela faz parte do histórico oficial do projeto.
-
-```plaintext
-[Working Directory]
-     ↓ (modifica o arquivo)
-  Modified
-     ↓ git add
-  Staged
-     ↓ git commit
-  Committed
-```
-
-### Como alterar um commit que ja foi para a origin
-
-1 - Fazer as alteracoes que deseja localmente.
-2 - Usar o comando `git commit --amend` para substituir o commit anterior por um novo.
-3 - O git apenas aceitara o push se usarmos a flag `-f` ou `--force`. **MUITO CUIDADO AO USAR ISSO**
 
 ## Vercel
 
@@ -1319,7 +1324,6 @@ npm install dotenv-expand --save
 DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB
 ```
 
-<<<<<<< Updated upstream
 ### Blob - Binary Large Object
 É um tipo de dado usado para armazenar grandes quantidades de dados binários — como imagens, vídeos, PDFs, áudios ou qualquer arquivo binário — que não são facilmente representados como texto.
 
@@ -1332,8 +1336,64 @@ Adicionando o operador pipe `|` no nosso `curl` apos a url da request podemos re
 ```bash
 curl https://bitbites.com.br/api/v1/status | python3 -m json.tool
 ```
-=======
+Da para usar o `jq` tambem que ja vem imbutido no sistema do Linux.
+```bash
+curl -s https://bitbites.com.br/api/v1/status | jq
+{
+  "updated_at": "2025-06-05T23:04:29.082Z",
+  "dependencies": {
+    "database": {
+      "version": "16.9",
+      "max_connections": 901,
+      "total_connections": 1
+    }
+  }
+}
+```
+
+
+Tambem e possivel passar um watch fazendo com que ele fique observando em um intervalo de tempo aquele http.
+
+```bash
+watch -n 10 'curl -s https://bitbites.com.br/api/v1/status | jq'
+```
+
 ### Comando de listar os arquivos
 
 `ls -l` - lista todos os arquivos na pasta mas de forma vertical.
->>>>>>> Stashed changes
+
+
+## Agile is Dead
+https://www.youtube.com/watch?v=a-BOSpxYJ9M
+
+
+## Estrategias de Branch
+1) Trunk-based Development
+2) Feature Branch
+3) Git Flow
+
+### Trunk-based Development
+Sempre usar como base a timeline principal - a branch principal (main). _Maluquice isso aqui porra_
+
+Para tentar organizar o codigo utiliza-se:
+- **Feature flags** => desenvolvedores comitam código de uma feature incompleta ou parcialmente funcional, mas escondido por uma flag condicional onde somente algumas pessoas ou o time interno poderao visualizar.
+- **Branch by Abstraction** => É uma técnica que permite fazer mudanças significativas no código sem precisar criar uma branch separada, e sem quebrar a aplicação enquanto a mudança está em progresso.
+- **Pair programming**
+- Bateria de testes automatizados.
+
+### Feature Branch (Github Flow)
+Cria uma branch para cada feature do projeto a partir da `main` - por exemplo trocar o banco de dados de postgres para mysql (`feature/db-mysql`). Entende-se que a main vai ser sempre o codigo atualizado, aquele que esta em producao.
+
+### Git Flow
+Tudo comeca na branch `main`, a qual contem o codigo no seu estado mais puro e pronto.
+As alteracoes sao feitas na branch `develop` que inicialmente herda o estado da branch `main` mas que e modificada atraves do tempo por `feature branches`. Quando a feature e encerrada ela e mergada na `develop`, caso estivessemos falando de um sprint apos todas as features serem feitas e serem mergeadas na develop elas serao passadas para uma branch `release` onde todo o codigo sera revisado, somente apos isso sera feito o merge com a branch `main`.
+Caso algum bug critico em producao seja encontrado, cria-se uma nova branch `hotfix` que herda o estado da `main` e depois sao mesclados nela.
+
+**🟢 Branches principais:**
+- `main` → produção
+- `develop` → preparação para próxima versão
+
+**🟡 Branches auxiliares:**
+- `feature/*` → para novas funcionalidades
+- `release/*` → fase de congelamento e testes
+- `hotfix/*` → correções críticas direto na produção

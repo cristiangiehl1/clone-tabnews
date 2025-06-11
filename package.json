@@ -7,7 +7,7 @@
   "type": "module",
   "main": "src/pages/index.tsx",
   "scripts": {
-    "dev": "npm run services:up && next dev",
+    "dev": "npm run services:up && npm run wait-for-postgres && npm run migration:up && next dev",
     "build": "next build",
     "start": "next start",
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
@@ -20,7 +20,8 @@
     "migration:create": "node-pg-migrate --migrations-dir src/infra/migrations --migration-file-language ts create",
     "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json up",
     "migration:down": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json down",
-    "build:migrations": "tsc -p tsconfig.build.json"
+    "migrations:build": "tsc -p tsconfig.build.json",
+    "wait-for-postgres": "node --experimental-transform-types src/infra/scripts/wait-for-postgres.ts"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
