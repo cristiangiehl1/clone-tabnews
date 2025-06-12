@@ -12,6 +12,7 @@
     - [Estagios de um arquivo no Git](#estagios-de-um-arquivo-no-git)
     - [Como alterar um commit que ja foi para a origin](#como-alterar-um-commit-que-ja-foi-para-a-origin)
     - [Como recuperar uma branch deletada?](#como-recuperar-uma-branch-deletada)
+    - [Outras info do `git`](#outras-info-do-git)
   - [Vercel](#vercel)
   - [DNS (Domain Name System)](#dns-domain-name-system)
     - [Como o computador sabe o IP de uma DNS?](#como-o-computador-sabe-o-ip-de-uma-dns)
@@ -89,7 +90,13 @@
   - [Next](#next)
     - [SWC (Speedy Web Compiler)](#swc-speedy-web-compiler)
     - [Next + Jest](#next--jest)
-  - [Como funciona as `branches` do `git`](#como-funciona-as-branches-do-git)
+  - [Agile is Dead](#agile-is-dead)
+  - [Estrategias de Branch](#estrategias-de-branch)
+    - [Trunk-based Development](#trunk-based-development)
+    - [Feature Branch (Github Flow)](#feature-branch-github-flow)
+    - [Git Flow](#git-flow)
+  - [Concurrently](#concurrently)
+    - [Flags](#flags)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -97,12 +104,10 @@
     - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env)
     - [Blob - Binary Large Object](#blob---binary-large-object)
     - [Comando interessante para usar no curl](#comando-interessante-para-usar-no-curl)
-    - [Comando de listar os arquivos](#comando-de-listar-os-arquivos)
-  - [Agile is Dead](#agile-is-dead)
-  - [Estrategias de Branch](#estrategias-de-branch)
-    - [Trunk-based Development](#trunk-based-development)
-    - [Feature Branch (Github Flow)](#feature-branch-github-flow)
-    - [Git Flow](#git-flow)
+    - [Comandos do bash](#comandos-do-bash)
+      - [Comando de listar os arquivos](#comando-de-listar-os-arquivos)
+      - [Comando para ver o valor do ultimo exit code](#comando-para-ver-o-valor-do-ultimo-exit-code)
+      - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
 >>>>>>> Stashed changes
 
 ## Node.js
@@ -294,6 +299,97 @@ Apos pegar o hash do commit e possivel criar uma branch informando o commit que 
 ```bash
 git checkout -b test-staging-deployment 9de0074
 ```
+
+### Outras info do `git`
+
+**1) Branch**
+São ponteiros (endereços) para commits. Podemos visualizar isso no terminal ao usar: 
+```bash
+cat .git/refs/heads/fix-migrations-endpoint
+```
+
+**resposta:** 
+```bash
+782c09ed5ec887d2827a0f1a609c9254571f0a50
+```
+
+Também é possível ver todas as refs do seu `.git` usando:
+```bash
+git show-ref
+```
+**resposta:** 
+```bash
+782c09ed5ec887d2827a0f1a609c9254571f0a50 refs/heads/fix-migrations-endpoint
+92cac5a644f771e6e37be231030dcbc64d6b16d4 refs/heads/main
+78da3acd2553c1dd121b6a3b896a56759e769557 refs/heads/test-staging-deployment
+782c09ed5ec887d2827a0f1a609c9254571f0a50 refs/remotes/origin/fix-migrations-endpoint
+92cac5a644f771e6e37be231030dcbc64d6b16d4 refs/remotes/origin/main
+78da3acd2553c1dd121b6a3b896a56759e769557 refs/remotes/origin/test-staging-deployment
+a70c8e335b5af6ff52422e26edd1de1771ad5be9 refs/stash
+```
+
+**observações:** 
+- `refs/heads/` - branches que existem localmente no seu repositório. 
+- `refs/remotes/origin` - representa as branches do repositório remoto origin. 
+- `refs/stash` - ref temporária usada quando você faz `git stash`
+
+**2) Commits** 
+São objetos que armazenam as seguintes informações:
+- ponteiro para uma `tree` => aponta para onde realmente estao os arquivos e diretorios daquele momento da "fotografia" tirada pelo commit.
+- `parent` => commit anterior
+- `author` => quem escreveu o commit
+- `commiter` => nao entendi muito bem a diferenca.
+
+```bash
+git cat-file -p 782c09ed5ec887d2827a0f1a609c9254571f0a50
+```
+
+**resposta:**
+```bash
+tree f0d450f3965b791968237bf9e917ea02e377168d
+parent 9de00740e541c0e6e2f93cde0c6e46047a8b7575
+author cristiangiehl1 <cristiangiehl@gmail.com> 1749164134 -0300
+committer cristiangiehl1 <cristiangiehl@gmail.com> 1749164134 -0300
+```
+
+**3) Tree**
+Estrutura de arquivos e diretorios correspondente a aquele momento do projeto.
+
+```bash
+git cat-file -p f0d450f3965b791968237bf9e917ea02e377168d
+```
+
+**resposta:**
+```bash
+<MODO> <TIPO>             <HASH>                           CAMINHO>
+100644  blob e3207ea27130e0be4d5bc16b1f9154029c76d3df	.editorconfig
+100644  blob 30050453c96b3b7cef50e70763f848ae245dddd7	.gitignore
+100644  blob bb1f5c27fc2cac21279ff0f9c2c48ed4a038cbb6	.nvmrc
+100644  blob d0d878e4045e48c5ed4ebce37cbba7bbfcebd038	.prettierignore
+100644  blob 32415744d762d97d89c44b998c221ebd57b00ccc	README.md
+040000  tree cdf820e18dc5ed1007529311e7f99f985dd05983	dist
+100644  blob 133adbadd4bfaff47efd560e2d6f12da4d9e6ee3	jest.config.ts
+100644  blob 4f11a03dc6cc37f2b5105c08f2e7b24c603ab2f4	next-env.d.ts
+100644  blob 1b974bb4cd02ee020eef80b940e0cb8a7fe0d413	package-lock.json
+100644  blob 6a2f230ecc5dac1698c56681d542d8bc52603061	package.json
+040000  tree 490454154ff03d195af9872eb45206afaff6b840	src
+100644  blob fbc8e7632de7fde0501314dc90f9e7facf16da85	tsconfig.build.json
+100644  blob 8efadfb29e838eb60cfbae72b64784ffab4a4ebc	tsconfig.json
+```
+**obs:** uma `tree` pode apontar para outras `inner-trees`.
+
+**4) Blob**
+Conteúdo dos arquivos. O git armazena esse conteúdo no formato de binarios compactados, mas usando o comando abaixo podemos fazer com que o `git` descompacte e interprete esse conteúdo para te mostrar o conteúdo original do arquivo em texto (ou, se for binário, ele pode mostrar caracteres não legíveis).
+
+```bash
+git cat-file -p bb1f5c27fc2cac21279ff0f9c2c48ed4a038cbb6
+```
+
+**resposta:** 
+```bash
+v20.18.2
+```
+
 
 ## Vercel
 
@@ -1179,11 +1275,58 @@ SWC can be used for both **compilation** and **bundling**. For compilation, it *
 
 ### Next + Jest
 [doc oficial do next](https://nextjs.org/docs/app/guides/testing/jest)
-
-
 O submodulo que importamos do `Next` para dentro do `Jest` por padrao nao carrega as variaveis de ambientes do `.env.development` em ambiente de test. 
 
-## Como funciona as `branches` do `git`
+## Agile is Dead
+https://www.youtube.com/watch?v=a-BOSpxYJ9M
+
+
+## Estrategias de Branch
+1) Trunk-based Development
+2) Feature Branch
+3) Git Flow
+
+### Trunk-based Development
+Sempre usar como base a timeline principal - a branch principal (main). _Maluquice isso aqui porra_
+
+Para tentar organizar o codigo utiliza-se:
+- **Feature flags** => desenvolvedores comitam código de uma feature incompleta ou parcialmente funcional, mas escondido por uma flag condicional onde somente algumas pessoas ou o time interno poderao visualizar.
+- **Branch by Abstraction** => É uma técnica que permite fazer mudanças significativas no código sem precisar criar uma branch separada, e sem quebrar a aplicação enquanto a mudança está em progresso.
+- **Pair programming**
+- Bateria de testes automatizados.
+
+### Feature Branch (Github Flow)
+Cria uma branch para cada feature do projeto a partir da `main` - por exemplo trocar o banco de dados de postgres para mysql (`feature/db-mysql`). Entende-se que a main vai ser sempre o codigo atualizado, aquele que esta em producao.
+
+### Git Flow
+Tudo comeca na branch `main`, a qual contem o codigo no seu estado mais puro e pronto.
+As alteracoes sao feitas na branch `develop` que inicialmente herda o estado da branch `main` mas que e modificada atraves do tempo por `feature branches`. Quando a feature e encerrada ela e mergada na `develop`, caso estivessemos falando de um sprint apos todas as features serem feitas e serem mergeadas na develop elas serao passadas para uma branch `release` onde todo o codigo sera revisado, somente apos isso sera feito o merge com a branch `main`.
+Caso algum bug critico em producao seja encontrado, cria-se uma nova branch `hotfix` que herda o estado da `main` e depois sao mesclados nela.
+
+**🟢 Branches principais:**
+- `main` → produção
+- `develop` → preparação para próxima versão
+
+**🟡 Branches auxiliares:**
+- `feature/*` → para novas funcionalidades
+- `release/*` → fase de congelamento e testes
+- `hotfix/*` → correções críticas direto na produção
+
+
+
+## Concurrently
+Pacote para run multiple commands concurrently. Like npm run watch-js & npm run watch-less but better.
+
+### Flags
+
+- `-n` ou `--name` → utilizada para dar nome aos processos no terminal, caso contrario aparece somente valores numericos de acordo com a quantidade de processos rodando.
+- `--hide` → esconde os logs de um processo pelo nome.
+- `--kill-others` ou `-k` → encerra os processos do concurrently. O problema e que isso retornar um exit code com error signal = 1.
+- `--success` ou `-s` + `command-jest` → utilizado para definir qual o comando o concurrently vai observar para definir o seu exit code.
+
+
+
+
 
 
 
@@ -1358,42 +1501,32 @@ Tambem e possivel passar um watch fazendo com que ele fique observando em um int
 watch -n 10 'curl -s https://bitbites.com.br/api/v1/status | jq'
 ```
 
-### Comando de listar os arquivos
 
+
+### Comandos do bash
+#### Comando de listar os arquivos
 `ls -l` - lista todos os arquivos na pasta mas de forma vertical.
 
+#### Comando para ver o valor do ultimo exit code
+```bash
+echo $?
+```
 
-## Agile is Dead
-https://www.youtube.com/watch?v=a-BOSpxYJ9M
+**Resposta sera um valor numerico**
+```bash
+130
+```
 
+_130 = SIGINT OU SIGNAL INTERRUPT_ acontece quando tu aperta ctrl + c para encerrar um processo no terminal.
 
-## Estrategias de Branch
-1) Trunk-based Development
-2) Feature Branch
-3) Git Flow
+#### Tempo de execucao de um comando
+```bash
+time npm rum test
+```
 
-### Trunk-based Development
-Sempre usar como base a timeline principal - a branch principal (main). _Maluquice isso aqui porra_
+```bash
+real 0m13.115s
+user 0m3.610s
+sys 0m1.613s
+```
 
-Para tentar organizar o codigo utiliza-se:
-- **Feature flags** => desenvolvedores comitam código de uma feature incompleta ou parcialmente funcional, mas escondido por uma flag condicional onde somente algumas pessoas ou o time interno poderao visualizar.
-- **Branch by Abstraction** => É uma técnica que permite fazer mudanças significativas no código sem precisar criar uma branch separada, e sem quebrar a aplicação enquanto a mudança está em progresso.
-- **Pair programming**
-- Bateria de testes automatizados.
-
-### Feature Branch (Github Flow)
-Cria uma branch para cada feature do projeto a partir da `main` - por exemplo trocar o banco de dados de postgres para mysql (`feature/db-mysql`). Entende-se que a main vai ser sempre o codigo atualizado, aquele que esta em producao.
-
-### Git Flow
-Tudo comeca na branch `main`, a qual contem o codigo no seu estado mais puro e pronto.
-As alteracoes sao feitas na branch `develop` que inicialmente herda o estado da branch `main` mas que e modificada atraves do tempo por `feature branches`. Quando a feature e encerrada ela e mergada na `develop`, caso estivessemos falando de um sprint apos todas as features serem feitas e serem mergeadas na develop elas serao passadas para uma branch `release` onde todo o codigo sera revisado, somente apos isso sera feito o merge com a branch `main`.
-Caso algum bug critico em producao seja encontrado, cria-se uma nova branch `hotfix` que herda o estado da `main` e depois sao mesclados nela.
-
-**🟢 Branches principais:**
-- `main` → produção
-- `develop` → preparação para próxima versão
-
-**🟡 Branches auxiliares:**
-- `feature/*` → para novas funcionalidades
-- `release/*` → fase de congelamento e testes
-- `hotfix/*` → correções críticas direto na produção

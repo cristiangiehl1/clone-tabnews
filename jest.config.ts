@@ -16,7 +16,8 @@ const jestConfig: Config = {
   // setupFiles: ["<rootDir>/src/tests/jest-setup-tests.ts"]
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
-  } // necessario configurar para que o Jest reconheca os alias de path do Next.
+  }, // necessario configurar para que o Jest reconheca os alias de path do Next.
+  testTimeout: 60000 // 60s
 }
 
 export default createJestConfig(jestConfig)

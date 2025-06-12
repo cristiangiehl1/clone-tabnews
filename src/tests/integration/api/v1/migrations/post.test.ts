@@ -1,14 +1,14 @@
 import database from "@/infra/database"
+import { waitForAllServices } from "@/tests/orchestrator"
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-async function cleanDatabase() {
+beforeAll(async() => {
+  await waitForAllServices()
   await database.query({
     text: "drop schema public cascade; create schema public;"
   })
-}
-
-beforeAll(cleanDatabase)
+})
 
 function getMigrationsFilesCount() {
   const MIGRATIONS_DIR = join(process.cwd(), "src", "infra", "migrations")
