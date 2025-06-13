@@ -3,7 +3,7 @@ name: Linting
 on: [pull_request]
 
 jobs:
-  jest:
+  prettier:
     name: Prettier
     runs-on: ubuntu-latest
     steps:
@@ -20,3 +20,22 @@ jobs:
 
       - name: 🔍 Check Prettier formatting
         run: npm run lint:prettier:check
+
+  eslint:
+    name: Eslint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node v22
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Check ESlint formatting
+        run: npm run lint:eslint:check
+    
