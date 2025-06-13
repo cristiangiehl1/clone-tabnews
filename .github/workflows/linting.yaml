@@ -38,4 +38,3 @@ jobs:
 
       - name: 🔍 Check ESlint formatting
         run: npm run lint:eslint:check
-    

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { ColumnDefinitions, MigrationBuilder } from "node-pg-migrate";
 
 export const shorthands: ColumnDefinitions | undefined = undefined;
