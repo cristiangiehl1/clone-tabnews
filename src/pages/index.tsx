@@ -7,11 +7,10 @@ export default function Home() {
   //   const link = document.createElement("a")
   //   link.href = url
   //   link.download = "file.txt"
-  //   link.click() 
+  //   link.click()
 
   //   setTimeout(() => URL.revokeObjectURL(url), 100);
   // }, [])
-
 
   return (
     <div>

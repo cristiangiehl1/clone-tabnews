@@ -1,52 +1,58 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { runner, type RunnerOption } from 'node-pg-migrate'
-import { join } from "node:path"
-import database from '@/infra/database'
+import type { NextApiRequest, NextApiResponse } from "next";
+import { runner, type RunnerOption } from "node-pg-migrate";
+import { join } from "node:path";
+import database from "@/infra/database";
 
-export default async function migrations(request: NextApiRequest, response: NextApiResponse) {
-  const allowedMethods = ["GET", "POST"]  
-  if(!allowedMethods.includes(request.method || "GET")) return response.status(405).json({ error: `Method ${request.method} not allowed`})
+export default async function migrations(
+  request: NextApiRequest,
+  response: NextApiResponse,
+) {
+  const allowedMethods = ["GET", "POST"];
+  if (!allowedMethods.includes(request.method || "GET"))
+    return response
+      .status(405)
+      .json({ error: `Method ${request.method} not allowed` });
 
-  // const dbURL = process.env.DATABASE_URL   
+  // const dbURL = process.env.DATABASE_URL
   // if (!dbURL) return response.status(500).json({ error: "Internal Server Error", message: "DATABASE_URL is not defined" })
-  
-  let dbClient
+
+  let dbClient;
 
   try {
-    dbClient = await database.getNewClient()
+    dbClient = await database.getNewClient();
     const runnerOptions: RunnerOption = {
       // databaseUrl: dbURL,
       dbClient: dbClient,
       dir: join(process.cwd(), "dist", "infra", "migrations"),
-      direction: 'up',
-      migrationsTable: 'pgmigrations',
+      direction: "up",
+      migrationsTable: "pgmigrations",
       verbose: true,
-    }
+    };
 
     if (request.method === "POST") {
       const migratedMigrations = await runner({
         ...runnerOptions,
         dryRun: false,
-      })
+      });
 
       if (migratedMigrations.length > 0) {
-        return response.status(201).json(migratedMigrations)
+        return response.status(201).json(migratedMigrations);
       }
 
-      return response.status(200).json(migratedMigrations)
+      return response.status(200).json(migratedMigrations);
     }
 
     if (request.method === "GET") {
       const pendingMigrations = await runner({
         ...runnerOptions,
         dryRun: true,
-    })
-      return response.status(200).json(pendingMigrations)
+      });
+      return response.status(200).json(pendingMigrations);
     }
   } catch (err) {
-    console.error(err)
-    throw err
+    console.error(err);
+    throw err;
   } finally {
-    if (dbClient) await dbClient.end()
+    if (dbClient) await dbClient.end();
   }
 }
