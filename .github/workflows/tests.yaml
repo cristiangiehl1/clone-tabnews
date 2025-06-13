@@ -1,0 +1,31 @@
+name: Automated Tests
+
+on: [pull_request] 
+
+jobs: 
+  jest:
+    name: Jest Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node v22
+        uses: actions/setup-node@v4
+        with: 
+          node-version-file: '.nvmrc'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+      
+      - name: 📄 Create .env.development
+        run: |
+          echo "POSTGRES_HOST=localhost" >> .env.development
+          echo "POSTGRES_PORT=5333" >> .env.development
+          echo "POSTGRES_USER=local_user" >> .env.development
+          echo "POSTGRES_DB=local_db" >> .env.development
+          echo "POSTGRES_PASSWORD=local_password" >> .env.development
+      - name: 🧪 Run tests
+        run: npm run test
+
+
