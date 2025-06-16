@@ -38,3 +38,26 @@ jobs:
 
       - name: 🔍 Check ESlint formatting
         run: npm run lint:eslint:check
+
+  commitlint:
+    name: Commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v4
+        # isso faz com que o checkout puxe todos os ultimos commits ao inves do padrao que e puxar somente o ultimo.
+        # precisamos disso pois o comando do commitlint precisa validar todos os commits daquela branch para ver se
+        # estao seguindo o padrao definido (nesse caso Coventionals Commits)
+        with:
+          fetch-depth: 0
+
+      - name: ⚙️ Setup Node v22
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Validate PR commits with commitlint
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
