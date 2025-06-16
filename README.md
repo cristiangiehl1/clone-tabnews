@@ -118,6 +118,7 @@
       - [Comando de listar os arquivos](#comando-de-listar-os-arquivos)
       - [Comando para ver o valor do ultimo exit code](#comando-para-ver-o-valor-do-ultimo-exit-code)
       - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
+      - [cat - concatenate](#cat---concatenate)
 
 ## Node.js
 
@@ -1667,3 +1668,79 @@ real 0m13.115s
 user 0m3.610s
 sys 0m1.613s
 ```
+
+
+#### cat - concatenate
+Lê arquivos (ou entrada padrão, stdin) e escreve seu conteúdo na saída padrão (stdout).
+
+```bash
+cat package.json
+```
+
+**Resposta**
+```bash
+{
+  "name": "curso-dev",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Cristian Giehl",
+  "type": "module",
+  "main": "src/pages/index.tsx",
+  "scripts": {
+    "dev": "npm run services:up && npm run wait-for-postgres && npm run migration:up && next dev",
+    "build": "next build",
+    "start": "next start",
+    "services:up": "docker compose -f src/infra/compose.yaml up -d",
+    "services:stop": "docker compose -f src/infra/compose.yaml stop",
+    "services:down": "docker compose -f src/infra/compose.yaml down",
+    "lint:prettier:check": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
+    "lint:eslint:check": "next lint --dir .",
+    "test": "npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
+    "test:watch": "jest --watchAll --runInBand",
+    "migration:create": "node-pg-migrate --migrations-dir src/infra/migrations --migration-file-language ts create",
+    "migration:up": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json up",
+    "migration:down": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json down",
+    "migrations:build": "tsc -p tsconfig.build.json",
+    "wait-for-postgres": "node --experimental-transform-types src/infra/scripts/wait-for-postgres.ts",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "async-retry": "^1.3.3",
+    "dotenv": "^16.5.0",
+    "dotenv-expand": "^12.0.2",
+    "lucide-react": "^0.511.0",
+    "next": "^13.1.6",
+    "pg": "^8.11.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/async-retry": "^1.4.9",
+    "@types/jest": "^29.5.14",
+    "@types/pg": "^8.15.2",
+    "@types/react": "19.1.6",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.4",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-jest": "^28.6.0",
+    "husky": "^9.1.7",
+    "jest": "^29.6.2",
+    "node-pg-migrate": "^8.0.1",
+    "prettier": "^3.5.3",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
+    "typescript": "5.8.3"
+  }
+}
+```
+
+Permite criar um arquivo e editar ele no terminal
+```bash
+cat > novo.txt
+```
+
