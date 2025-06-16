@@ -238,14 +238,16 @@ Permite configurar uma porta pública ou privada.
 2 - Usar o comando `git commit --amend` para substituir o commit anterior por um novo.
 3 - O git apenas aceitara o push se usarmos a flag `-f` ou `--force`. **MUITO CUIDADO AO USAR ISSO**
 
-
 ### Como pular os hooks de verificacao do `git`
 
 Simplesmente use o comando abaixo:
+
 ```bash
 git commit --no-verify
 ```
+
 OU
+
 ```bash
 git commit -n
 ```
@@ -1764,9 +1766,3 @@ cat > novo.txt
 ### Commitizen
 
 Package para mostrar os types dos commits (ci, feat, docs, etc)
-
-
-
-
-
-
