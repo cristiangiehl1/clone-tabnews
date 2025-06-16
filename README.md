@@ -12,6 +12,8 @@
     - [Estagios de um arquivo no Git](#estagios-de-um-arquivo-no-git)
     - [Como alterar um commit que ja foi para a origin](#como-alterar-um-commit-que-ja-foi-para-a-origin)
     - [Como recuperar uma branch deletada?](#como-recuperar-uma-branch-deletada)
+    - [Rebase](#rebase)
+      - [Como alterar o nome de um commit que nao esta no HEAD](#como-alterar-o-nome-de-um-commit-que-nao-esta-no-head)
     - [Outras info do `git`](#outras-info-do-git)
   - [Vercel](#vercel)
   - [DNS (Domain Name System)](#dns-domain-name-system)
@@ -310,6 +312,36 @@ Apos pegar o hash do commit e possivel criar uma branch informando o commit que 
 ```bash
 git checkout -b test-staging-deployment 9de0074
 ```
+
+### Rebase
+
+No `rebase` voce deve apontar qual a nova base voce deseja utilizar para a sua branch.
+Podemos excluir o `package-lock.json` para resolver o conflito entre versoes no arquivo.
+
+```bash
+git rebase main
+```
+
+Depois de resolver todos os conflitos devemos executar o comando abaixo:
+
+```bash
+git rebase --continue
+```
+
+Isso vai abrir uma nova aba no `vscode` caso voce queira mudar a mensagem de commit.
+
+#### Como alterar o nome de um commit que nao esta no HEAD
+
+```bash
+git rebase -i HEAD~2
+```
+
+Isso vai abrir uma lista contendo os commits que vao ser integrados na branch e uma lista de comandos que podem ser executados neles:
+
+- `pick` usa o commit.
+- `reword` usa o commit, mas pode editar a mensagem.
+
+Lembra sempre de usar o `ctrl + s` para salvar as alteracoes.
 
 ### Outras info do `git`
 
@@ -1428,19 +1460,18 @@ Usar o tempo verbal no **imperativo do presente**.
 
 O proprio `git` usa esse tempo verbal.
 
-
 ### Coventionals Commits
 
 [Conventionals Commits Docs](https://www.conventionalcommits.org/en/v1.0.0/)
-
 
 ### Commitlint
 
 [Commitlint Doc](https://commitlint.js.org/)
 [Commitlint CLI](https://www.npmjs.com/package/@commitlint/cli)
-[Commitlint conventional commits validation](@commitlint/config-conventional) 
+[Commitlint conventional commits validation](@commitlint/config-conventional)
 
 #### Testando
+
 O comando `echo` no terminal envia uma string para a **saída padrão (stdout)**, não diretamente para a **entrada padrão (stdin)** de outro programa.
 
 Mas você pode usar o resultado do echo para alimentar o **stdin** de outro comando usando um `pipe` **(|)**,
@@ -1450,6 +1481,7 @@ echo "teste" | npx commitlint
 ```
 
 **Resposta**
+
 ```bash
 ⧗   input: teste
 ✖   subject may not be empty [subject-empty]
