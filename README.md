@@ -11,6 +11,7 @@
     - [Commandos](#commandos)
     - [Estagios de um arquivo no Git](#estagios-de-um-arquivo-no-git)
     - [Como alterar um commit que ja foi para a origin](#como-alterar-um-commit-que-ja-foi-para-a-origin)
+    - [Como pular os hooks de verificacao do `git`](#como-pular-os-hooks-de-verificacao-do-git)
     - [Como recuperar uma branch deletada?](#como-recuperar-uma-branch-deletada)
     - [Rebase](#rebase)
       - [Como alterar o nome de um commit que nao esta no HEAD](#como-alterar-o-nome-de-um-commit-que-nao-esta-no-head)
@@ -236,6 +237,20 @@ Permite configurar uma porta pública ou privada.
 1 - Fazer as alteracoes que deseja localmente.
 2 - Usar o comando `git commit --amend` para substituir o commit anterior por um novo.
 3 - O git apenas aceitara o push se usarmos a flag `-f` ou `--force`. **MUITO CUIDADO AO USAR ISSO**
+
+### Como pular os hooks de verificacao do `git`
+
+Simplesmente use o comando abaixo:
+
+```bash
+git commit --no-verify
+```
+
+OU
+
+```bash
+git commit -n
+```
 
 ### Como recuperar uma branch deletada?
 
@@ -1277,6 +1292,7 @@ Precisa configurar um **self-signed certificate** in certificate chain (certific
 
 ### Desmembrando a URL de uma DB
 
+// secretlint-disable
 postgres://meuuser:minhasenha@meuhost.sobralnet.com:5432/meubanco
 
 ### SSL - Secure Sockets Layer
