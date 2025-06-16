@@ -97,8 +97,25 @@
     - [Git Flow](#git-flow)
   - [Concurrently](#concurrently)
     - [Flags](#flags)
-  - [Outro](#outro) - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query) - [PostgreSQL](#postgresql) - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta) - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env) - [Blob - Binary Large Object](#blob---binary-large-object) - [Comando interessante para usar no curl](#comando-interessante-para-usar-no-curl) - [Comandos do bash](#comandos-do-bash) - [Comando de listar os arquivos](#comando-de-listar-os-arquivos) - [Comando para ver o valor do ultimo exit code](#comando-para-ver-o-valor-do-ultimo-exit-code) - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
-    > > > > > > > Stashed changes
+  - [Commits](#commits)
+    - [Boas Práticas](#boas-práticas)
+    - [Definindo a mensagem de um commit](#definindo-a-mensagem-de-um-commit)
+      - [Forma Errada](#forma-errada)
+      - [Forma Correta](#forma-correta)
+    - [Coventionals Commits](#coventionals-commits)
+    - [Commitlint](#commitlint)
+      - [Testando](#testando)
+  - [Outro](#outro)
+    - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
+    - [PostgreSQL](#postgresql)
+    - [Query Sanitization ou Limpeza de Consulta](#query-sanitization-ou-limpeza-de-consulta)
+    - [Como usar interpolacao em arquivos `.env`](#como-usar-interpolacao-em-arquivos-env)
+    - [Blob - Binary Large Object](#blob---binary-large-object)
+    - [Comando interessante para usar no curl](#comando-interessante-para-usar-no-curl)
+    - [Comandos do bash](#comandos-do-bash)
+      - [Comando de listar os arquivos](#comando-de-listar-os-arquivos)
+      - [Comando para ver o valor do ultimo exit code](#comando-para-ver-o-valor-do-ultimo-exit-code)
+      - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
 
 ## Node.js
 
@@ -1376,6 +1393,71 @@ Pacote para run multiple commands concurrently. Like npm run watch-js & npm run 
 - `--hide` → esconde os logs de um processo pelo nome.
 - `--kill-others` ou `-k` → encerra os processos do concurrently. O problema e que isso retornar um exit code com error signal = 1.
 - `--success` ou `-s` + `command-jest` → utilizado para definir qual o comando o concurrently vai observar para definir o seu exit code.
+
+## Commits
+
+### Boas Práticas
+
+- Separe cada mudança lógica em um commit diferente.  
+  **Exemplo:** uma melhoria de performance em um componente e a implementação de uma nova funcionalidade devem ser feitos em commits separados.
+
+- Cada commit deve ser justificável por seus próprios méritos.  
+  A alteração precisa ter escopo completo: início, meio e fim. Evite criar commits que dependam de mudanças futuras para funcionar corretamente.
+
+Respondendo à pergunta do filipedeschamps, acredito que, se levarmos em consideração a explicação que ele deu sobre deixar em um mesmo commit a implementação de uma nova feature e os testes automatizados dela, podemos seguir o mesmo raciocínio para as alterações na documentação que forem consequência de uma nova implementação ou de um ajuste de bug.
+
+Dessa forma, se mergearmos esse commit e ele causar um novo bug, precisando revertê-lo, a documentação não ficará defasada nem desalinhada com o estado atual da aplicação.
+
+Caso seja necessário reverter esse commit e, por algum motivo, manter o mesmo conteúdo da documentação aplicado nele, é fácil acessar esse commit, copiar o conteúdo e colar no escopo do código do novo commit.
+
+Agora, se for uma implementação e uma alteração da documentação que não têm nenhuma relação entre as partes, a melhor opção seria um commit separado para cada uma, pelo próprio conceito de escopo que o filipedeschamps explicou durante a aula.
+
+### Definindo a mensagem de um commit
+
+Usar o tempo verbal no **imperativo do presente**.
+
+#### Forma Errada
+
+"**Ajustei** o bug de cadastro no backend"
+"**Adicionei** um button maior na interface"
+
+#### Forma Correta
+
+"**Ajusta** o bug de cadastro no backend"
+"**Adiciona** um button maior na interface"
+
+O proprio `git` usa esse tempo verbal.
+
+
+### Coventionals Commits
+
+[Conventionals Commits Docs](https://www.conventionalcommits.org/en/v1.0.0/)
+
+
+### Commitlint
+
+[Commitlint Doc](https://commitlint.js.org/)
+[Commitlint CLI](https://www.npmjs.com/package/@commitlint/cli)
+[Commitlint conventional commits validation](@commitlint/config-conventional) 
+
+#### Testando
+O comando `echo` no terminal envia uma string para a **saída padrão (stdout)**, não diretamente para a **entrada padrão (stdin)** de outro programa.
+
+Mas você pode usar o resultado do echo para alimentar o **stdin** de outro comando usando um `pipe` **(|)**,
+
+```bash
+echo "teste" | npx commitlint
+```
+
+**Resposta**
+```bash
+⧗   input: teste
+✖   subject may not be empty [subject-empty]
+✖   type may not be empty [type-empty]
+
+✖   found 2 problems, 0 warnings
+ⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint
+```
 
 ## Outro
 
