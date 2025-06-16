@@ -23,7 +23,8 @@
     "migration:down": "node-pg-migrate --migrations-dir src/infra/migrations --envPath .env.development --tsconfig tsconfig.json down",
     "migrations:build": "tsc -p tsconfig.build.json",
     "wait-for-postgres": "node --experimental-transform-types src/infra/scripts/wait-for-postgres.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "commit": "cz"
   },
   "dependencies": {
     "async-retry": "^1.3.3",
@@ -42,7 +43,9 @@
     "@types/jest": "^29.5.14",
     "@types/pg": "^8.15.2",
     "@types/react": "19.1.6",
+    "commitizen": "^4.3.1",
     "concurrently": "^9.1.2",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.4",
     "eslint-config-prettier": "^10.1.5",
@@ -54,5 +57,10 @@
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",
     "typescript": "5.8.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

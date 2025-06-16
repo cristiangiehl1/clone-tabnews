@@ -119,6 +119,7 @@
       - [Comando para ver o valor do ultimo exit code](#comando-para-ver-o-valor-do-ultimo-exit-code)
       - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
       - [cat - concatenate](#cat---concatenate)
+    - [Commitizen](#commitizen)
 
 ## Node.js
 
@@ -1669,8 +1670,8 @@ user 0m3.610s
 sys 0m1.613s
 ```
 
-
 #### cat - concatenate
+
 Lê arquivos (ou entrada padrão, stdin) e escreve seu conteúdo na saída padrão (stdout).
 
 ```bash
@@ -1678,6 +1679,7 @@ cat package.json
 ```
 
 **Resposta**
+
 ```bash
 {
   "name": "curso-dev",
@@ -1740,7 +1742,11 @@ cat package.json
 ```
 
 Permite criar um arquivo e editar ele no terminal
+
 ```bash
 cat > novo.txt
 ```
 
+### Commitizen
+
+Package para mostrar os types dos commits (ci, feat, docs, etc)
