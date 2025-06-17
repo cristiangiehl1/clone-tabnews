@@ -111,6 +111,7 @@
   - [Tipos da Licença](#tipos-da-licença)
   - [Semantic Versioning](#semantic-versioning)
     - [npm-check-updates](#npm-check-updates)
+  - [](#)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -1538,6 +1539,8 @@ npm-check-updates upgrades your package.json dependencies to the latest versions
 ```bash
 npx npm-check-updates -i
 ```
+
+##
 
 ## Outro
 
