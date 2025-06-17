@@ -1,13 +1,11 @@
 import database from "@/infra/database";
-import { waitForAllServices } from "@/tests/orchestrator";
+import orchestrator from "@/tests/orchestrator";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
 beforeAll(async () => {
-  await waitForAllServices();
-  await database.query({
-    text: "drop schema public cascade; create schema public;",
-  });
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
 });
 
 function getMigrationsFilesCount() {
