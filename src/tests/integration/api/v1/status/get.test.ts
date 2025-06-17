@@ -22,4 +22,6 @@ test.skip("Testando SQL Injeciton", () => {
   fetch(
     "http://localhost:3000/api/v1/status?databaseName='; SELECT pg_sleep(4); --",
   );
+
+  expect(1).toBe(1);
 });

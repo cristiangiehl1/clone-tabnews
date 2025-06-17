@@ -110,6 +110,7 @@
       - [Testando](#testando)
   - [Tipos da Licença](#tipos-da-licença)
   - [Semantic Versioning](#semantic-versioning)
+    - [npm-check-updates](#npm-check-updates)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -1527,6 +1528,16 @@ echo "teste" | npx commitlint
 - `major`: quando uma alteração no software **introduz mudanças que quebram a compatibilidade com versões anteriores** (ou seja, mudanças incompatíveis que podem causar falhas em quem usa versões antigas).
 
 _backwards compatible_: mantém a compatibilidade com versões anteriores.
+
+### npm-check-updates
+
+npm-check-updates upgrades your package.json dependencies to the latest versions, ignoring specified versions.
+
+[doc npm-check-updates](https://www.npmjs.com/package/npm-check-updates)
+
+```bash
+npx npm-check-updates -i
+```
 
 ## Outro
 
