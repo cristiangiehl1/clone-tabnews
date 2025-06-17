@@ -108,6 +108,9 @@
     - [Coventionals Commits](#coventionals-commits)
     - [Commitlint](#commitlint)
       - [Testando](#testando)
+  - [Tipos da Licença](#tipos-da-licença)
+  - [Semantic Versioning](#semantic-versioning)
+    - [npm-check-updates](#npm-check-updates)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -1507,6 +1510,33 @@ echo "teste" | npx commitlint
 
 ✖   found 2 problems, 0 warnings
 ⓘ   Get help: https://github.com/conventional-changelog/commitlint/#what-is-commitlint
+```
+
+## Tipos da Licença
+
+- Apache 2.0
+- BSD (Berkeley Software Distribution)
+- AGPL (Affero General Public License)
+- MIT (Massachusetts Institute of Technology)
+
+## Semantic Versioning
+
+[ ].[ ].[ patch ]
+
+- `patch`: quando uma alteração no software **não adiciona nenhum recurso novo** (feature), mas **corrige apenas bugs ou problemas de segurança**.
+- `minor`: quando uma alteração no software **adiciona uma nova funcionalidade ou método**, mas **mantém a compatibilidade com versões anteriores** (ou seja, **não introduz mudanças que quebrem o funcionamento do que já existia**).
+- `major`: quando uma alteração no software **introduz mudanças que quebram a compatibilidade com versões anteriores** (ou seja, mudanças incompatíveis que podem causar falhas em quem usa versões antigas).
+
+_backwards compatible_: mantém a compatibilidade com versões anteriores.
+
+### npm-check-updates
+
+npm-check-updates upgrades your package.json dependencies to the latest versions, ignoring specified versions.
+
+[doc npm-check-updates](https://www.npmjs.com/package/npm-check-updates)
+
+```bash
+npx npm-check-updates -i
 ```
 
 ## Outro
