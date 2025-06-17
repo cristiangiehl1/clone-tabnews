@@ -78,6 +78,8 @@
   - [MVC - Model Viewl Controller](#mvc---model-viewl-controller)
   - [TDD - Test Driven Development](#tdd---test-driven-development)
     - [Estagios do TDD](#estagios-do-tdd)
+  - [BDD - Behavior Driven Development](#bdd---behavior-driven-development)
+    - [Gherkin](#gherkin)
   - [Provedores de banco de dados](#provedores-de-banco-de-dados)
     - [Desmembrando a URL de uma DB](#desmembrando-a-url-de-uma-db)
     - [SSL - Secure Sockets Layer](#ssl---secure-sockets-layer)
@@ -1279,6 +1281,41 @@ TDD (Desenvolvimento Guiado por Testes) é uma técnica de desenvolvimento de so
 
 3. Refactor
    Improve the code without changing behavior, and ensure the test still passes.
+
+## BDD - Behavior Driven Development
+
+**O que é?**
+É uma abordagem ágil de desenvolvimento de software focada em comunicar claramente o comportamento esperado do sistema entre desenvolvedores, testadores e stakeholders (clientes, gerentes, etc).
+
+**Objetivo:**
+Evitar mal-entendidos definindo regras e funcionalidades em uma linguagem comum, que todos entendem.
+
+**Como funciona?**
+As especificações são escritas em termos de comportamento esperado (cenários) antes da implementação, servindo como documentação e testes automatizados.
+
+### Gherkin
+
+**O que é?**
+É uma linguagem de texto estruturado usada para escrever especificações BDD de forma legível por humanos e máquinas.
+
+**Características:**
+
+- Usa palavras-chave simples em inglês (e outros idiomas):
+  - `Feature`, `Scenario`, `Given`, `When`, `Then`, `And`, `But`
+    - `Given`: dado
+    - `When`: quando
+    - `Then`: entao
+- Escreve cenários de uso do sistema, descrevendo contexto, ação e resultado esperado.
+
+**Exemplo**
+`Given` the user is not logged in
+`Dado` que o usuario nao esta logado
+
+`When` the user make a POST to /migrations endpoint
+`Quando` o usuario faz um POST para o endpoint /migrations
+
+`Then` the migrations should be executed successfully
+`Entao` as migracoes devem ser executadas com sucesso
 
 ## Provedores de banco de dados
 

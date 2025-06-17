@@ -15,27 +15,31 @@ function getMigrationsFilesCount() {
   return readdirSync(MIGRATIONS_DIR).length;
 }
 
-describe("POST to /api/v1/migrations should return 200", () => {
-  test("Filipe Solution", async () => {
-    const res1 = await fetch("http://localhost:3000/api/v1/migrations", {
-      method: "POST",
+describe("POST /api/v1/migrations", () => {
+  describe("Anonymous user", () => {
+    describe("Running pending migrations", () => {
+      test("For the first time", async () => {
+        const res = await fetch("http://localhost:3000/api/v1/migrations", {
+          method: "POST",
+        });
+        const resBody1 = await res.json();
+
+        expect(res.status).toBe(201);
+        expect(Array.isArray(resBody1)).toBe(true);
+        expect(resBody1.length).toBeGreaterThan(0);
+      });
+      test("For the second time", async () => {
+        const res = await fetch("http://localhost:3000/api/v1/migrations", {
+          method: "POST",
+        });
+        const resBody2 = await res.json();
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(resBody2)).toBe(true);
+        expect(resBody2.length).toBe(0);
+      });
     });
-    const resBody1 = await res1.json();
-
-    expect(res1.status).toBe(201);
-    expect(Array.isArray(resBody1)).toBe(true);
-    expect(resBody1.length).toBeGreaterThan(0);
-
-    const res2 = await fetch("http://localhost:3000/api/v1/migrations", {
-      method: "POST",
-    });
-    const resBody2 = await res2.json();
-
-    expect(res2.status).toBe(200);
-    expect(Array.isArray(resBody2)).toBe(true);
-    expect(resBody2.length).toBe(0);
   });
-
   test("My Solution", async () => {
     const res = await fetch("http://localhost:3000/api/v1/migrations", {
       method: "POST",
