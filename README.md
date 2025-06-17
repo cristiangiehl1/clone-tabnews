@@ -78,6 +78,8 @@
   - [MVC - Model Viewl Controller](#mvc---model-viewl-controller)
   - [TDD - Test Driven Development](#tdd---test-driven-development)
     - [Estagios do TDD](#estagios-do-tdd)
+  - [BDD - Behavior Driven Development](#bdd---behavior-driven-development)
+    - [Gherkin](#gherkin)
   - [Provedores de banco de dados](#provedores-de-banco-de-dados)
     - [Desmembrando a URL de uma DB](#desmembrando-a-url-de-uma-db)
     - [SSL - Secure Sockets Layer](#ssl---secure-sockets-layer)
@@ -111,6 +113,8 @@
   - [Tipos da Licença](#tipos-da-licença)
   - [Semantic Versioning](#semantic-versioning)
     - [npm-check-updates](#npm-check-updates)
+  - [Scripts do `package.json`](#scripts-do-packagejson)
+  - [Commando `trap`](#commando-trap)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -124,6 +128,7 @@
       - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
       - [cat - concatenate](#cat---concatenate)
     - [Commitizen](#commitizen)
+    - [`join` x `resolve` - `node:path`](#join-x-resolve---nodepath)
 
 ## Node.js
 
@@ -1278,6 +1283,41 @@ TDD (Desenvolvimento Guiado por Testes) é uma técnica de desenvolvimento de so
 3. Refactor
    Improve the code without changing behavior, and ensure the test still passes.
 
+## BDD - Behavior Driven Development
+
+**O que é?**
+É uma abordagem ágil de desenvolvimento de software focada em comunicar claramente o comportamento esperado do sistema entre desenvolvedores, testadores e stakeholders (clientes, gerentes, etc).
+
+**Objetivo:**
+Evitar mal-entendidos definindo regras e funcionalidades em uma linguagem comum, que todos entendem.
+
+**Como funciona?**
+As especificações são escritas em termos de comportamento esperado (cenários) antes da implementação, servindo como documentação e testes automatizados.
+
+### Gherkin
+
+**O que é?**
+É uma linguagem de texto estruturado usada para escrever especificações BDD de forma legível por humanos e máquinas.
+
+**Características:**
+
+- Usa palavras-chave simples em inglês (e outros idiomas):
+  - `Feature`, `Scenario`, `Given`, `When`, `Then`, `And`, `But`
+    - `Given`: dado
+    - `When`: quando
+    - `Then`: entao
+- Escreve cenários de uso do sistema, descrevendo contexto, ação e resultado esperado.
+
+**Exemplo**
+`Given` the user is not logged in
+`Dado` que o usuario nao esta logado
+
+`When` the user make a POST to /migrations endpoint
+`Quando` o usuario faz um POST para o endpoint /migrations
+
+`Then` the migrations should be executed successfully
+`Entao` as migracoes devem ser executadas com sucesso
+
 ## Provedores de banco de dados
 
 **ElephantSQL (descontinuado)**
@@ -1539,6 +1579,42 @@ npm-check-updates upgrades your package.json dependencies to the latest versions
 npx npm-check-updates -i
 ```
 
+## Scripts do `package.json`
+
+Podemos adicionar em todo script outro script com o `pre` ou `post` concatenando com o nome do script que queremos executar.
+
+```json
+"scripts": {
+  "dev": "npm run services:up && npm run services:wait:database && npm run migration:up && next dev",
+  "postdev": "npm run services:stop",
+}
+```
+
+O problema dessa abordagem e que caso tivermos algum `exit code` de error o `post` nao sera executado.
+
+## Commando `trap`
+
+O comando trap serve para **executar um comando ou função quando o shell recebe um sinal específico**. É muito usado para garantir que, ao interromper o script (ex: Ctrl+C), ele execute alguma limpeza, feche conexões, apague arquivos temporários, ou pare serviços.
+
+**sintaxe basica**
+
+```bash
+trap "comando_ou_funcao" sinais
+```
+
+- `comando_ou_funcao`: pode ser uma função bash, um conjunto de comandos ou um script. Use aspas para agrupar comandos.
+- `sinais`: um ou mais sinais que o shell pode receber, como `INT`, `EXIT`, `TERM`, etc.
+
+| Sinal  | Descrição                                      |
+| ------ | ---------------------------------------------- |
+| `INT`  | Interrupção pelo usuário (Ctrl+C)              |
+| `TERM` | Solicitação de término (kill padrão)           |
+| `EXIT` | Evento de saída do script (natural ou forçado) |
+| `ERR`  | Quando um comando retorna erro (set -e)        |
+| `HUP`  | Hangup: terminal desconectado                  |
+
+[trap command](https://www.linuxjournal.com/content/bash-trap-command)
+
 ## Outro
 
 ### 3 formas de escrever uma `query`
@@ -1796,3 +1872,34 @@ cat > novo.txt
 ### Commitizen
 
 Package para mostrar os types dos commits (ci, feat, docs, etc)
+
+### `join` x `resolve` - `node:path`
+
+**path.join(...segments)**
+
+- **Objetivo:** Junta os segmentos de caminho em um único caminho.
+- **Comportamento:** Não considera o caminho absoluto, apenas concatena corretamente os segmentos, inserindo as barras (/ ou \) corretas conforme o sistema operacional.
+
+Exemplo:
+
+```ts
+path.join("folder", "subfolder", "file.txt");
+// => 'folder/subfolder/file.txt' (em Unix)
+```
+
+**path.resolve(...segments)**
+
+- **Objetivo:** Resolve os segmentos em um caminho absoluto.
+- **Comportamento:** Considera o diretório atual (process.cwd()) e resolve o caminho a partir de um ponto inicial absoluto ou relativo. Se algum argumento for um caminho absoluto, ele zera os anteriores.
+
+Exemplo:
+
+```ts
+path.resolve("folder", "subfolder", "file.txt");
+// => '/home/user/project/folder/subfolder/file.txt' (supondo que você está em /home/user/project)
+```
+
+```ts
+path.resolve("/folder", "subfolder", "file.txt");
+// => '/folder/subfolder/file.txt' (porque começou com '/folder', então ignora o que vem antes)
+```

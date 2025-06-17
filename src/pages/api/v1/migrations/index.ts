@@ -13,9 +13,6 @@ export default async function migrations(
       .status(405)
       .json({ error: `Method ${request.method} not allowed` });
 
-  // const dbURL = process.env.DATABASE_URL
-  // if (!dbURL) return response.status(500).json({ error: "Internal Server Error", message: "DATABASE_URL is not defined" })
-
   let dbClient;
 
   try {
