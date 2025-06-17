@@ -128,6 +128,7 @@
       - [Tempo de execucao de um comando](#tempo-de-execucao-de-um-comando)
       - [cat - concatenate](#cat---concatenate)
     - [Commitizen](#commitizen)
+    - [`join` x `resolve` - `node:path`](#join-x-resolve---nodepath)
 
 ## Node.js
 
@@ -1871,3 +1872,34 @@ cat > novo.txt
 ### Commitizen
 
 Package para mostrar os types dos commits (ci, feat, docs, etc)
+
+### `join` x `resolve` - `node:path`
+
+**path.join(...segments)**
+
+- **Objetivo:** Junta os segmentos de caminho em um único caminho.
+- **Comportamento:** Não considera o caminho absoluto, apenas concatena corretamente os segmentos, inserindo as barras (/ ou \) corretas conforme o sistema operacional.
+
+Exemplo:
+
+```ts
+path.join("folder", "subfolder", "file.txt");
+// => 'folder/subfolder/file.txt' (em Unix)
+```
+
+**path.resolve(...segments)**
+
+- **Objetivo:** Resolve os segmentos em um caminho absoluto.
+- **Comportamento:** Considera o diretório atual (process.cwd()) e resolve o caminho a partir de um ponto inicial absoluto ou relativo. Se algum argumento for um caminho absoluto, ele zera os anteriores.
+
+Exemplo:
+
+```ts
+path.resolve("folder", "subfolder", "file.txt");
+// => '/home/user/project/folder/subfolder/file.txt' (supondo que você está em /home/user/project)
+```
+
+```ts
+path.resolve("/folder", "subfolder", "file.txt");
+// => '/folder/subfolder/file.txt' (porque começou com '/folder', então ignora o que vem antes)
+```
