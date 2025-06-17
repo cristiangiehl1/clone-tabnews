@@ -111,7 +111,8 @@
   - [Tipos da Licença](#tipos-da-licença)
   - [Semantic Versioning](#semantic-versioning)
     - [npm-check-updates](#npm-check-updates)
-  - [](#)
+  - [Scripts do `package.json`](#scripts-do-packagejson)
+  - [Commando `trap`](#commando-trap)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -1540,7 +1541,41 @@ npm-check-updates upgrades your package.json dependencies to the latest versions
 npx npm-check-updates -i
 ```
 
-##
+## Scripts do `package.json`
+
+Podemos adicionar em todo script outro script com o `pre` ou `post` concatenando com o nome do script que queremos executar.
+
+```json
+"scripts": {
+  "dev": "npm run services:up && npm run services:wait:database && npm run migration:up && next dev",
+  "postdev": "npm run services:stop",
+}
+```
+
+O problema dessa abordagem e que caso tivermos algum `exit code` de error o `post` nao sera executado.
+
+## Commando `trap`
+
+O comando trap serve para **executar um comando ou função quando o shell recebe um sinal específico**. É muito usado para garantir que, ao interromper o script (ex: Ctrl+C), ele execute alguma limpeza, feche conexões, apague arquivos temporários, ou pare serviços.
+
+**sintaxe basica**
+
+```bash
+trap "comando_ou_funcao" sinais
+```
+
+- `comando_ou_funcao`: pode ser uma função bash, um conjunto de comandos ou um script. Use aspas para agrupar comandos.
+- `sinais`: um ou mais sinais que o shell pode receber, como `INT`, `EXIT`, `TERM`, etc.
+
+| Sinal  | Descrição                                      |
+| ------ | ---------------------------------------------- |
+| `INT`  | Interrupção pelo usuário (Ctrl+C)              |
+| `TERM` | Solicitação de término (kill padrão)           |
+| `EXIT` | Evento de saída do script (natural ou forçado) |
+| `ERR`  | Quando um comando retorna erro (set -e)        |
+| `HUP`  | Hangup: terminal desconectado                  |
+
+[trap command](https://www.linuxjournal.com/content/bash-trap-command)
 
 ## Outro
 
