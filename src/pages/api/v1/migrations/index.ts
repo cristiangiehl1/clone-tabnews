@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { runner, type RunnerOption } from "node-pg-migrate";
-import { join } from "node:path";
+import { resolve } from "node:path";
 import database from "@/infra/database";
 
 export default async function migrations(
@@ -20,7 +20,7 @@ export default async function migrations(
     const runnerOptions: RunnerOption = {
       // databaseUrl: dbURL,
       dbClient: dbClient,
-      dir: join(process.cwd(), "dist", "infra", "migrations"),
+      dir: resolve(process.cwd(), "dist", "infra", "migrations"),
       direction: "up",
       migrationsTable: "pgmigrations",
       verbose: true,
