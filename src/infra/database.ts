@@ -1,14 +1,15 @@
 import { Client, type QueryConfig } from "pg";
 
 async function query(queryObj: QueryConfig) {
-  const client = await getNewClient();
+  let client;
   try {
+    client = await getNewClient();
     return await client.query(queryObj);
   } catch (err) {
     console.error(err);
     throw err;
   } finally {
-    await client.end();
+    client?.end();
   }
 }
 
