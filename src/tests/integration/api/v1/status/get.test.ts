@@ -20,6 +20,7 @@ describe("GET /api/v1/status", () => {
       expect(resBody.dependencies.database.total_connections).toEqual(1);
     });
 
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip("Testando SQL Injeciton", () => {
       fetch(
         "http://localhost:3000/api/v1/status?databaseName='; SELECT pg_sleep(4); --",

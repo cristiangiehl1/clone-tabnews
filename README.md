@@ -115,6 +115,7 @@
     - [npm-check-updates](#npm-check-updates)
   - [Scripts do `package.json`](#scripts-do-packagejson)
   - [Commando `trap`](#commando-trap)
+  - [Data Fetching](#data-fetching)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -1614,6 +1615,11 @@ trap "comando_ou_funcao" sinais
 | `HUP`  | Hangup: terminal desconectado                  |
 
 [trap command](https://www.linuxjournal.com/content/bash-trap-command)
+
+## Data Fetching
+
+- SWR
+- React Query
 
 ## Outro
 
