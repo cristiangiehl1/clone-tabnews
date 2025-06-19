@@ -116,6 +116,7 @@
   - [Scripts do `package.json`](#scripts-do-packagejson)
   - [Commando `trap`](#commando-trap)
   - [Data Fetching](#data-fetching)
+  - [Erros no JavaScript](#erros-no-javascript)
   - [Outro](#outro)
     - [3 formas de escrever uma `query`](#3-formas-de-escrever-uma-query)
     - [PostgreSQL](#postgresql)
@@ -1620,6 +1621,13 @@ trap "comando_ou_funcao" sinais
 
 - SWR
 - React Query
+
+## Erros no JavaScript
+
+- `ReferenceError`: Esse erro ocorre quando se tenta acessar uma variável que não foi declarada ou que está fora do escopo.
+- `SyntaxError`: Esse erro ocorre quando há um problema na escrita do código — ou seja, uma violação da sintaxe da linguagem JavaScript.
+- `RangeError`: Esse erro ocorre quando um valor está fora do intervalo permitido, como ao trabalhar com números, índices de array ou datas fora do limite aceitável.
+- `TypeError`: Esse erro ocorre quando se tenta executar uma operação em um tipo de dado que não suporta aquela operação ou método.
 
 ## Outro
 
