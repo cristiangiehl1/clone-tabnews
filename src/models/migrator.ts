@@ -12,7 +12,7 @@ async function runMigrations({ dryRun = true }: { dryRun?: boolean }) {
       dir: resolve(process.cwd(), "dist", "infra", "migrations"),
       direction: "up",
       migrationsTable: "pgmigrations",
-      verbose: true,
+      log: () => {},
       dryRun,
       dbClient,
     };
