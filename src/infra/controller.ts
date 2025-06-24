@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import {
   InternalServerError,
   MethodNotAllowedError,
+  NotFoundError,
   ValidationError,
 } from "./errors";
 
@@ -17,7 +18,7 @@ function onErrorHandler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (err instanceof ValidationError) {
+  if (err instanceof ValidationError || err instanceof NotFoundError) {
     return res.status(err.statusCode).json(err);
   }
 
