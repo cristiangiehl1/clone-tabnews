@@ -1,5 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { InternalServerError, MethodNotAllowedError } from "./errors";
+import {
+  InternalServerError,
+  MethodNotAllowedError,
+  ValidationError,
+} from "./errors";
 
 function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
   const publicErrorObject = new MethodNotAllowedError({});
@@ -13,6 +17,10 @@ function onErrorHandler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (err instanceof ValidationError) {
+    return res.status(err.statusCode).json(err);
+  }
+
   const publicErrorObject = new InternalServerError({
     cause: err,
     statusCode:
@@ -23,9 +31,7 @@ function onErrorHandler(
 
   console.error(publicErrorObject);
 
-  return res
-    .status(publicErrorObject.statusCode || 500)
-    .json(publicErrorObject.toJSON());
+  return res.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
 const controller = {
