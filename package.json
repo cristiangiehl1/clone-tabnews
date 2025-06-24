@@ -7,10 +7,10 @@
   "type": "module",
   "main": "src/pages/index.tsx",
   "scripts": {
-    "dev": "trap \"npm run services:stop\" INT EXIT && npm run services:up && npm run services:wait:database && npm run migrations:up && next dev",
+    "dev": "trap \"npm run services:stop\" INT EXIT && npm run services:up && npm run services:wait:database && npm run migrations:build && npm run migrations:up && next dev",
     "build": "next build",
     "start": "next start",
-    "test": "trap \"npm run services:stop\" INT EXIT && npm run services:up && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
+    "test": "trap \"npm run services:stop\" INT EXIT && npm run services:up && npm run migrations:build && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
     "test:watch": "jest --watchAll --runInBand --verbose",
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
     "services:stop": "docker compose -f src/infra/compose.yaml stop",
@@ -37,7 +37,8 @@
     "pg": "8.16.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "19.8.1",

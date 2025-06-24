@@ -32,9 +32,16 @@ async function clearDatabase() {
   });
 }
 
+async function runPendingMigrations() {
+  await fetch("http://localhost:3000/api/v1/migrations", {
+    method: "POST",
+  });
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
+  runPendingMigrations,
 };
 
 export default orchestrator;
