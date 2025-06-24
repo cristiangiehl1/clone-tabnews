@@ -8,7 +8,7 @@
   "main": "src/pages/index.tsx",
   "scripts": {
     "dev": "trap \"npm run services:stop\" INT EXIT && npm run services:up && npm run services:wait:database && npm run migrations:build && npm run migrations:up && next dev",
-    "build": "next build",
+    "build": "npm run migrations:build && next build",
     "start": "next start",
     "test": "trap \"npm run services:stop\" INT EXIT && npm run services:up && npm run migrations:build && concurrently -n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand --verbose\"",
     "test:watch": "jest --watchAll --runInBand --verbose",
