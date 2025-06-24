@@ -1,5 +1,5 @@
 import database from "@/infra/database";
-import { ValidationError } from "@/infra/errors";
+import { NotFoundError, ValidationError } from "@/infra/errors";
 
 export interface CreateUserParams {
   username: string;
@@ -77,8 +77,39 @@ async function create({ email, password, username }: CreateUserParams) {
   }
 }
 
+async function findOneByUsername(username: string) {
+  const userFound = await runSelectQuery(username);
+  return userFound;
+
+  async function runSelectQuery(username: string) {
+    const result = await database.query({
+      text: `
+      SELECT 
+        *  
+      FROM
+        users
+      WHERE
+        LOWER(username) = LOWER($1)
+      LIMIT 
+        1
+      ;`,
+      values: [username],
+    });
+
+    if (result.rows.length === 0) {
+      throw new NotFoundError({
+        message: "O username informado nao foi encontrado no sistema.",
+        action: "Verifique se o username esta digitado corretamente",
+      });
+    }
+
+    return result.rows[0];
+  }
+}
+
 const user = {
   create,
+  findOneByUsername,
 };
 
 export default user;
