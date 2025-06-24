@@ -1,7 +1,7 @@
 import database from "@/infra/database";
 import orchestrator from "@/tests/orchestrator";
 import { readdirSync } from "node:fs";
-import { join } from "node:path";
+import { resolve } from "node:path";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -9,7 +9,7 @@ beforeAll(async () => {
 });
 
 function getMigrationsFilesCount() {
-  const MIGRATIONS_DIR = join(process.cwd(), "src", "infra", "migrations");
+  const MIGRATIONS_DIR = resolve(process.cwd(), "src", "infra", "migrations");
   return readdirSync(MIGRATIONS_DIR).length;
 }
 
