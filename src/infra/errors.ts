@@ -81,11 +81,11 @@ export class ValidationError extends Error {
     message?: string;
     action?: string;
   }) {
-    super(message || "Um erro de validation ocorreu.", {
+    super(message || "Um erro de validação ocorreu.", {
       cause,
     });
     this.name = "ValidationError";
-    this.action = action || "Verifique se o serviço está disponível.";
+    this.action = action || "Ajuste os dados enviados e tente novamente.";
     this.statusCode = 400;
   }
 

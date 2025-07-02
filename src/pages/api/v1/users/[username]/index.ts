@@ -6,11 +6,21 @@ import user from "@/models/users";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.get(getHandler);
+router.patch(patchHandler);
 
 async function getHandler(req: NextApiRequest, res: NextApiResponse) {
   const username = req.query.username as string;
   const userFound = await user.findOneByUsername(username);
   return res.status(200).json(userFound);
+}
+
+async function patchHandler(req: NextApiRequest, res: NextApiResponse) {
+  const username = req.query.username as string;
+  const userInputValues = req.body;
+
+  const userUpdated = await user.update({ username, params: userInputValues });
+
+  return res.status(200).json(userUpdated);
 }
 
 export default router.handler(controller.errorHandlers);
