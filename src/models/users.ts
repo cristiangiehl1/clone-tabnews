@@ -1,5 +1,6 @@
 import database from "@/infra/database";
 import { NotFoundError, ValidationError } from "@/infra/errors";
+import passwordModel from "./password";
 
 export interface CreateUserParams {
   username: string;
@@ -10,7 +11,12 @@ export interface CreateUserParams {
 async function create({ email, password, username }: CreateUserParams) {
   await validateUniqueEmail(email);
   await validateUniqueUsername(username);
-  const newUser = await runInsertQuery({ email, password, username });
+  const hashedPassword = await hashPassword(password);
+  const newUser = await runInsertQuery({
+    email,
+    password: hashedPassword,
+    username,
+  });
   return newUser;
 
   async function validateUniqueEmail(email: string) {
@@ -53,6 +59,10 @@ async function create({ email, password, username }: CreateUserParams) {
         action: "Utilize outro username para realizar o cadastro,",
       });
     }
+  }
+
+  async function hashPassword(password: string) {
+    return await passwordModel.hash(password);
   }
 
   async function runInsertQuery({
