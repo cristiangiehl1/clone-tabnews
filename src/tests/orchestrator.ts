@@ -1,5 +1,9 @@
 import database from "@/infra/database";
+import type { User } from "@/models/entities/users";
+import type { CreateUserParams } from "@/models/users";
+import user from "@/models/users";
 import retry from "async-retry";
+import Chance from "chance";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -38,10 +42,25 @@ async function runPendingMigrations() {
   });
 }
 
+async function createUser(data: {
+  email?: string;
+  username?: string;
+  password?: string;
+}): Promise<User> {
+  const chance = new Chance();
+
+  return await user.create({
+    username: data.username || chance.name(),
+    email: data.email || chance.email(),
+    password: data.password || "validpassword",
+  });
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
   runPendingMigrations,
+  createUser,
 };
 
 export default orchestrator;
