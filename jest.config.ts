@@ -12,12 +12,11 @@ const createJestConfig = nextJest({
 
 const jestConfig: Config = {
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  moduleDirectories: ["node_modules"], // define onde o Jest deve procurar por módulos.
-  // setupFiles: ["<rootDir>/src/tests/jest-setup-tests.ts"]
+  moduleDirectories: ["node_modules"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
-  }, // necessario configurar para que o Jest reconheca os alias de path do Next.
-  testTimeout: 60000, // 60s
+  },
+  testTimeout: 60000,
 };
 
 export default createJestConfig(jestConfig);

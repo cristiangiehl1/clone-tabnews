@@ -87,7 +87,10 @@ async function update({
 }) {
   const currentUser = await findOneByUsername(username);
 
-  if (params.username) {
+  if (
+    params.username &&
+    params.username.toLowerCase() !== currentUser.username.toLowerCase()
+  ) {
     await validateUniqueUsername(params.username);
   }
 
