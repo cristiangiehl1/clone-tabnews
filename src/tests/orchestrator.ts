@@ -1,6 +1,5 @@
 import database from "@/infra/database";
 import type { User } from "@/models/entities/users";
-import type { CreateUserParams } from "@/models/users";
 import user from "@/models/users";
 import retry from "async-retry";
 import Chance from "chance";
