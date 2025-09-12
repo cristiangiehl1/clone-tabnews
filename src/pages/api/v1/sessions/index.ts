@@ -26,17 +26,8 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
   });
 
   const newSession = await sessions.create({ userId: authenticatedUser.id });
-  // res.setHeader("Set-Cookie", `session_id=${newSession.token}; Path=/`);
 
-  const setCookie = cookie.serialize("session_id", newSession.token, {
-    path: "/",
-    // expires: new Date(newSession.expires_at), // data exata de expiracao do cookie
-    maxAge: sessions.EXPIRATION_IN_MILLISECONDS / 1000,
-    secure: process.env.NODE_ENV === "development" ? false : true, // aceeita ou nao HTTP ou apenas HTTPS
-    httpOnly: true, // codigo javascript do client-side nao consegue acessar os cookies marcados com http-only, tambem conhecido como XXS (Cross-Site Scripting)
-  });
-
-  res.setHeader("Set-Cookie", setCookie);
+  controller.setSessionCookie({ res, token: newSession.token });
 
   return res.status(201).json(newSession);
 }

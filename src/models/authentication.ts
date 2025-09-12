@@ -1,7 +1,7 @@
 import { NotFoundError, UnauthorizedError } from "@/infra/errors";
 import type { User } from "./entities/users";
 import password from "./password";
-import user from "./users";
+import user from "./user";
 
 async function getAuthenticatedUser({
   email,

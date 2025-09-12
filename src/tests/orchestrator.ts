@@ -1,6 +1,7 @@
 import database from "@/infra/database";
 import type { User } from "@/models/entities/users";
-import user from "@/models/users";
+import sessions from "@/models/session";
+import user from "@/models/user";
 import retry from "async-retry";
 import Chance from "chance";
 
@@ -55,11 +56,16 @@ async function createUser(data: {
   });
 }
 
+async function createSession(userId: string) {
+  return await sessions.create({ userId });
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
   runPendingMigrations,
   createUser,
+  createSession,
 };
 
 export default orchestrator;

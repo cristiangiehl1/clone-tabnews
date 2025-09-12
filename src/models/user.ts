@@ -48,6 +48,36 @@ async function create({ email, password, username }: CreateUserParams) {
   }
 }
 
+async function findOneById(id: string): Promise<User> {
+  const userFound = await runSelectQuery(id);
+  return userFound;
+
+  async function runSelectQuery(id: string) {
+    const result = await database.query({
+      text: `
+      SELECT 
+        *  
+      FROM
+        users
+      WHERE
+        id = $1
+      LIMIT 
+        1
+      ;`,
+      values: [id],
+    });
+
+    if (result.rows.length === 0) {
+      throw new NotFoundError({
+        message: "O usuario nao foi encontrado no sistema.",
+        action: "Verifique se o id esta digitado corretamente",
+      });
+    }
+
+    return result.rows[0];
+  }
+}
+
 async function findOneByUsername(username: string): Promise<User> {
   const userFound = await runSelectQuery(username);
   return userFound;
@@ -206,6 +236,7 @@ async function hashPassword(password: string) {
 
 const user = {
   create,
+  findOneById,
   findOneByUsername,
   findOneByEmail,
   update,
