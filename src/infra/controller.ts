@@ -21,11 +21,12 @@ function onErrorHandler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (
-    err instanceof ValidationError ||
-    err instanceof NotFoundError ||
-    err instanceof UnauthorizedError
-  ) {
+  if (err instanceof ValidationError || err instanceof NotFoundError) {
+    return res.status(err.statusCode).json(err);
+  }
+
+  if (err instanceof UnauthorizedError) {
+    clearSessionCookie(res);
     return res.status(err.statusCode).json(err);
   }
 
