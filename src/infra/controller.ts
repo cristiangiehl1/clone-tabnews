@@ -6,6 +6,8 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "./errors";
+import * as cookie from "cookie";
+import session from "@/models/session";
 
 function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
   const publicErrorObject = new MethodNotAllowedError({});
@@ -36,11 +38,30 @@ function onErrorHandler(
   return res.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
+function setSessionCookie({
+  res,
+  token,
+}: {
+  token: string;
+  res: NextApiResponse;
+}) {
+  const setCookie = cookie.serialize("session_id", token, {
+    path: "/",
+    // expires: new Date(newSession.expires_at), // data exata de expiracao do cookie
+    maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+    secure: process.env.NODE_ENV === "development" ? false : true, // aceeita ou nao HTTP ou apenas HTTPS
+    httpOnly: true, // codigo javascript do client-side nao consegue acessar os cookies marcados com http-only, tambem conhecido como XXS (Cross-Site Scripting)
+  });
+
+  res.setHeader("Set-Cookie", setCookie);
+}
+
 const controller = {
   errorHandlers: {
     onNoMatch: onNoMatchHandler,
     onError: onErrorHandler,
   },
+  setSessionCookie,
 };
 
 export default controller;
