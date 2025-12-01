@@ -35,8 +35,10 @@ async function getAuthenticatedUser({
     } catch (err) {
       if (err instanceof NotFoundError) {
         throw new UnauthorizedError({
-          message: "Email nao confere.",
-          action: "Verifique se este dado esta correto.",
+          message:
+            "Não foi possível encontrar um usuário com o e-mail informado.",
+          action:
+            "Verifique se o endereço está correto ou cadastre uma nova conta.",
         });
       }
       throw err;
